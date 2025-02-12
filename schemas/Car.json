@@ -1,0 +1,17 @@
+{
+   "className": "Car",
+   "fields": {
+      "brand": {
+         "type": "String"
+      },
+      "year": {
+         "type": "Number"
+      },
+      "price": {
+         "type": "Number"
+      },
+      "description": {
+         "type": "String"
+      }
+   }
+}
