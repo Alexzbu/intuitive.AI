@@ -1,9 +1,0 @@
-{
-   "databaseURI": "mongodb+srv: //alexzbu:G0PjfNDtm05TJ4fi@cluster0.vyxm4.mongodb.net/parseServer",
-   "cloud": "./cloud/main.js",
-   "appId": "myAppId123",
-   "masterKey": "myMasterKey123",
-   "serverURL": "http://localhost:3000/parse",
-   "publicServerURL": "http://localhost:3000/parse",
-   "encodeParseObjectInCloudFunction": true
-}

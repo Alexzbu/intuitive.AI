@@ -3,7 +3,7 @@ import express from 'express'
 import gql from 'graphql-tag'
 import config from './config/default.mjs'
 import carSchema from './schemas/Car.json' assert { type: 'json' }
-// import parseConfig from './parse-server-config.json'
+import carSchema2 from './schemas/Car2.json' assert { type: 'json' }
 import fs from 'fs'
 
 const customSchema = fs.readFileSync('./cloud/schema.graphql')
@@ -18,7 +18,10 @@ const parseConfig = {
     publicServerURL: 'http://localhost:3000/parse',
     encodeParseObjectInCloudFunction: true,
     schema: {
-        definition: carSchema
+        definitions: [carSchema, carSchema2],
+        lockSchemas: true,
+        strict: true,
+        deleteExtraFields: true
     }
 
 }

@@ -27,3 +27,56 @@
 {"level":"error","message":"Invalid key(s) found in Parse Server configuration: schema.definition","timestamp":"2025-02-12T11:34:22.934Z"}
 {"level":"info","message":"Running Migrations","timestamp":"2025-02-12T11:34:29.709Z"}
 {"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T11:34:31.871Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T11:24:28.870Z"}
+{"level":"warn","message":"classLevelPermissions not provided for Car.","timestamp":"2025-02-12T11:24:29.139Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T11:24:30.410Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T11:40:11.451Z"}
+{"level":"warn","message":"classLevelPermissions not provided for Car.","timestamp":"2025-02-12T11:40:11.920Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T11:40:13.850Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T11:51:00.084Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T11:51:00.349Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T15:52:55.564Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T15:52:55.915Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T15:57:11.575Z"}
+{"level":"warn","message":"The following schemas are currently present in the database, but not explicitly defined in a schema: \"Car\"","timestamp":"2025-02-12T15:57:11.637Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T15:57:11.822Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T16:00:34.172Z"}
+{"level":"warn","message":"classLevelPermissions not provided for Car2.","timestamp":"2025-02-12T16:00:34.251Z"}
+{"level":"warn","message":"The following schemas are currently present in the database, but not explicitly defined in a schema: \"Car\"","timestamp":"2025-02-12T16:00:34.307Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T16:00:34.490Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T16:02:29.140Z"}
+{"level":"warn","message":"classLevelPermissions not provided for Car2.","timestamp":"2025-02-12T16:02:29.258Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T16:02:29.522Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T16:03:18.464Z"}
+{"level":"warn","message":"classLevelPermissions not provided for Car.","timestamp":"2025-02-12T16:03:18.616Z"}
+{"level":"warn","message":"classLevelPermissions not provided for Car2.","timestamp":"2025-02-12T16:03:18.618Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T16:03:18.949Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T16:03:56.772Z"}
+{"level":"warn","message":"The following schemas are currently present in the database, but not explicitly defined in a schema: \"Car2\"","timestamp":"2025-02-12T16:03:56.979Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T16:03:57.188Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T16:07:57.195Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T16:07:57.638Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T16:08:32.443Z"}
+{"level":"warn","message":"The following schemas are currently present in the database, but not explicitly defined in a schema: \"Car2\"","timestamp":"2025-02-12T16:08:32.672Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T16:08:32.909Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T16:11:19.951Z"}
+{"level":"warn","message":"The following schemas are currently present in the database, but not explicitly defined in a schema: \"Car2\"","timestamp":"2025-02-12T16:11:20.190Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T16:11:20.379Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T16:14:07.274Z"}
+{"level":"warn","message":"The following schemas are currently present in the database, but not explicitly defined in a schema: \"Car2\"","timestamp":"2025-02-12T16:14:07.539Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T16:14:07.739Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T16:14:41.967Z"}
+{"level":"warn","message":"The following schemas are currently present in the database, but not explicitly defined in a schema: \"Car2\"","timestamp":"2025-02-12T16:14:42.184Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T16:14:42.394Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T18:55:43.959Z"}
+{"level":"warn","message":"The following schemas are currently present in the database, but not explicitly defined in a schema: \"Car2\"","timestamp":"2025-02-12T18:55:44.223Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T18:55:44.463Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T18:57:34.368Z"}
+{"level":"warn","message":"classLevelPermissions not provided for Car.","timestamp":"2025-02-12T18:57:34.517Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T18:57:34.817Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T18:58:34.612Z"}
+{"level":"warn","message":"classLevelPermissions not provided for Car2.","timestamp":"2025-02-12T18:58:34.691Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T18:58:34.995Z"}
+{"level":"info","message":"Running Migrations","timestamp":"2025-02-12T18:59:25.560Z"}
+{"level":"warn","message":"The following schemas are currently present in the database, but not explicitly defined in a schema: \"Car\"","timestamp":"2025-02-12T18:59:27.196Z"}
+{"level":"info","message":"Running Migrations Completed","timestamp":"2025-02-12T18:59:27.979Z"}
