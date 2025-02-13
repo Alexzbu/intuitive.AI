@@ -1,0 +1,37 @@
+{
+   "className": "Question",
+   "fields": {
+      "question_name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "answer_explenetion": {
+         "type": "String"
+      },
+      "quiz": {
+         "type": "Relation",
+         "targetClass": "Quiz"
+      }
+   },
+   "classLevelPermissions": {
+      "find": {
+         "*": true
+      },
+      "count": {
+         "*": true
+      },
+      "get": {
+         "*": true
+      },
+      "update": {
+         "*": true
+      },
+      "create": {
+         "*": true
+      },
+      "delete": {
+         "*": true
+      }
+   }
+}

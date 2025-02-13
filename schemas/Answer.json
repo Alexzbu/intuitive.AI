@@ -1,0 +1,38 @@
+{
+   "className": "Answer",
+   "fields": {
+      "answer_name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "answer_status": {
+         "type": "Boolean",
+         "required": true
+      },
+      "question": {
+         "type": "Relation",
+         "targetClass": "Question"
+      }
+   },
+   "classLevelPermissions": {
+      "find": {
+         "*": true
+      },
+      "count": {
+         "*": true
+      },
+      "get": {
+         "*": true
+      },
+      "update": {
+         "*": true
+      },
+      "create": {
+         "*": true
+      },
+      "delete": {
+         "*": true
+      }
+   }
+}

@@ -1,0 +1,38 @@
+{
+   "className": "PDF_File",
+   "fields": {
+      "file_name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "file": {
+         "type": "File",
+         "required": true
+      },
+      "section": {
+         "type": "Relation",
+         "targetClass": "Section"
+      }
+   },
+   "classLevelPermissions": {
+      "find": {
+         "*": true
+      },
+      "count": {
+         "*": true
+      },
+      "get": {
+         "*": true
+      },
+      "update": {
+         "*": true
+      },
+      "create": {
+         "*": true
+      },
+      "delete": {
+         "*": true
+      }
+   }
+}

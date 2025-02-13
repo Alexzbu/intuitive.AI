@@ -1,0 +1,34 @@
+{
+   "className": "Quiz",
+   "fields": {
+      "quiz_name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "section": {
+         "type": "Relation",
+         "targetClass": "Section"
+      }
+   },
+   "classLevelPermissions": {
+      "find": {
+         "*": true
+      },
+      "count": {
+         "*": true
+      },
+      "get": {
+         "*": true
+      },
+      "update": {
+         "*": true
+      },
+      "create": {
+         "*": true
+      },
+      "delete": {
+         "*": true
+      }
+   }
+}

@@ -1,30 +1,12 @@
 import { ParseServer, ParseGraphQLServer } from 'parse-server'
 import express from 'express'
 import gql from 'graphql-tag'
-import config from './config/default.mjs'
-import carSchema from './schemas/Car.json' assert { type: 'json' }
-import carSchema2 from './schemas/Car2.json' assert { type: 'json' }
 import fs from 'fs'
+import parseConfig from './config/parseConfig.mjs'
 
-const customSchema = fs.readFileSync('./cloud/schema.graphql')
+const sectionSchema = fs.readFileSync('./graphql/section.graphql')
 const app = express()
 
-const parseConfig = {
-    databaseURI: config.mongoURI,
-    cloud: './cloud/main.js',
-    appId: 'myAppId123',
-    masterKey: 'myMasterKey123',
-    serverURL: 'http://localhost:3000/parse',
-    publicServerURL: 'http://localhost:3000/parse',
-    encodeParseObjectInCloudFunction: true,
-    schema: {
-        definitions: [carSchema, carSchema2],
-        lockSchemas: true,
-        strict: true,
-        deleteExtraFields: true
-    }
-
-}
 const parseServer = new ParseServer(parseConfig)
 
 await parseServer.start()
@@ -34,7 +16,7 @@ const parseGraphQLServer = new ParseGraphQLServer(
     {
         graphQLPath: '/graphql',
         playgroundPath: '/playground',
-        graphQLCustomTypeDefs: gql`${customSchema}`
+        graphQLCustomTypeDefs: gql`${sectionSchema}`
     }
 )
 app.use('/parse', parseServer.app)
