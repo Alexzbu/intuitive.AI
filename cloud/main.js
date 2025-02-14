@@ -1,1 +1,2 @@
 require('./section')
+require('./quiz')

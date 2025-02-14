@@ -5,6 +5,7 @@ import fs from 'fs'
 import parseConfig from './config/parseConfig.mjs'
 
 const sectionSchema = fs.readFileSync('./graphql/section.graphql')
+const quizSchema = fs.readFileSync('./graphql/quiz.graphql')
 const app = express()
 
 const parseServer = new ParseServer(parseConfig)
@@ -16,7 +17,7 @@ const parseGraphQLServer = new ParseGraphQLServer(
     {
         graphQLPath: '/graphql',
         playgroundPath: '/playground',
-        graphQLCustomTypeDefs: gql`${sectionSchema}`
+        graphQLCustomTypeDefs: gql`${sectionSchema} ${quizSchema}`
     }
 )
 app.use('/parse', parseServer.app)

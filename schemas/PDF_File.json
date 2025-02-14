@@ -9,10 +9,6 @@
       "file": {
          "type": "File",
          "required": true
-      },
-      "section": {
-         "type": "Relation",
-         "targetClass": "Section"
       }
    },
    "classLevelPermissions": {

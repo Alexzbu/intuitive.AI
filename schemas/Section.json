@@ -5,6 +5,18 @@
          "type": "String",
          "required": true,
          "unique": true
+      },
+      "videos": {
+         "type": "Relation",
+         "targetClass": "Video"
+      },
+      "quizzes": {
+         "type": "Relation",
+         "targetClass": "Quiz"
+      },
+      "pdf_files": {
+         "type": "Relation",
+         "targetClass": "PDF_File"
       }
    },
    "classLevelPermissions": {

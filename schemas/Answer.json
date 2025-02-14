@@ -6,13 +6,9 @@
          "required": true,
          "unique": true
       },
-      "answer_status": {
+      "isCorrect": {
          "type": "Boolean",
-         "required": true
-      },
-      "question": {
-         "type": "Relation",
-         "targetClass": "Question"
+         "default": false
       }
    },
    "classLevelPermissions": {

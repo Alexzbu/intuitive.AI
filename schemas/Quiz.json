@@ -6,9 +6,9 @@
          "required": true,
          "unique": true
       },
-      "section": {
+      "questions": {
          "type": "Relation",
-         "targetClass": "Section"
+         "targetClass": "Question"
       }
    },
    "classLevelPermissions": {

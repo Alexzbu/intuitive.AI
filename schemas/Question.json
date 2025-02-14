@@ -9,9 +9,9 @@
       "answer_explenetion": {
          "type": "String"
       },
-      "quiz": {
+      "answers": {
          "type": "Relation",
-         "targetClass": "Quiz"
+         "targetClass": "Answer"
       }
    },
    "classLevelPermissions": {

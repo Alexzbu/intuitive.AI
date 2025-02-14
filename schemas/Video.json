@@ -9,10 +9,6 @@
       "video_link": {
          "type": "String",
          "required": true
-      },
-      "section": {
-         "type": "Relation",
-         "targetClass": "Section"
       }
    },
    "classLevelPermissions": {
