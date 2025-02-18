@@ -1,17 +1,42 @@
 {
    "className": "Question",
    "fields": {
-      "question_name": {
+      "name": {
          "type": "String",
          "required": true,
          "unique": true
       },
-      "answer_explenetion": {
-         "type": "String"
+      "question_type": {
+         "type": "String",
+         "required": true,
+         "unique": true
       },
-      "answers": {
+      "video_name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "video_link": {
+         "type": "String",
+         "required": true
+      },
+      "file_name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "file": {
+         "type": "File",
+         "required": true
+      },
+      "quiz_name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "quiz_questions": {
          "type": "Relation",
-         "targetClass": "Answer"
+         "targetClass": "Quiz_Question"
       }
    },
    "classLevelPermissions": {

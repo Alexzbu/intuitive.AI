@@ -1,3 +1,1 @@
-require('./section')
-require('./quiz')
-require('./video')
+require('./course')

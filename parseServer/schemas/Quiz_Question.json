@@ -1,22 +1,17 @@
 {
-   "className": "Lecture",
+   "className": "Quiz_Question",
    "fields": {
-      "section_name": {
+      "name": {
          "type": "String",
          "required": true,
          "unique": true
       },
-      "videos": {
-         "type": "Relation",
-         "targetClass": "Video"
+      "answer_explenetion": {
+         "type": "String"
       },
-      "quizzes": {
+      "answers": {
          "type": "Relation",
-         "targetClass": "Quiz"
-      },
-      "pdf_files": {
-         "type": "Relation",
-         "targetClass": "PDF_File"
+         "targetClass": "Answer"
       }
    },
    "classLevelPermissions": {

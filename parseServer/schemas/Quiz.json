@@ -1,7 +1,7 @@
 {
    "className": "Quiz",
    "fields": {
-      "quiz_name": {
+      "name": {
          "type": "String",
          "required": true,
          "unique": true

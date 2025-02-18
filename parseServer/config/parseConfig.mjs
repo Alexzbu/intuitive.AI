@@ -1,12 +1,11 @@
 import dotenv from 'dotenv'
 import config from './default.mjs'
-import CourseOverview from '../schemas/Course_overview.json'
 import Answer from '../schemas/Answer.json' assert { type: 'json' }
-import PDF_File from '../schemas/PDF_File.json' assert { type: 'json' }
+import Course from '../schemas/Course.json' assert { type: 'json' }
 import Question from '../schemas/Question.json' assert { type: 'json' }
+import Quiz_Question from '../schemas/Quiz_Question.json' assert { type: 'json' }
 import Quiz from '../schemas/Quiz.json' assert { type: 'json' }
-import Lecture from '../schemas/Lecture.json' assert { type: 'json' }
-import Video from '../schemas/Video.json' assert { type: 'json' }
+import Section from '../schemas/Section.json' assert { type: 'json' }
 dotenv.config()
 
 export default {
@@ -20,7 +19,10 @@ export default {
    verbose: true,
    encodeParseObjectInCloudFunction: true,
    schema: {
-      definitions: [CourseOverview, Answer, PDF_File, Question, Quiz, Lecture, Video],
+      definitions: [Answer, Course, Quiz_Question, Question, Quiz, Section],
+      lockSchemas: true,
+      strict: true,
+      recreateModifiedFields: true,
 
    }
 }
