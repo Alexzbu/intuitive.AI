@@ -1,0 +1,34 @@
+{
+   "className": "Quiz",
+   "fields": {
+      "quiz_name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "questions": {
+         "type": "Relation",
+         "targetClass": "Question"
+      }
+   },
+   "classLevelPermissions": {
+      "find": {
+         "*": true
+      },
+      "count": {
+         "*": true
+      },
+      "get": {
+         "*": true
+      },
+      "update": {
+         "*": true
+      },
+      "create": {
+         "*": true
+      },
+      "delete": {
+         "*": true
+      }
+   }
+}

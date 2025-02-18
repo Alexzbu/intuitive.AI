@@ -1,0 +1,42 @@
+{
+   "className": "Course",
+   "fields": {
+      "course_name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "course_description": {
+         "type": "String",
+         "required": true
+      },
+      "sections": {
+         "type": "Relation",
+         "targetClass": "Section"
+      },
+      "reviews": {
+         "type": "Relation",
+         "targetClass": "Review"
+      }
+   },
+   "classLevelPermissions": {
+      "find": {
+         "*": true
+      },
+      "count": {
+         "*": true
+      },
+      "get": {
+         "*": true
+      },
+      "update": {
+         "*": true
+      },
+      "create": {
+         "*": true
+      },
+      "delete": {
+         "*": true
+      }
+   }
+}

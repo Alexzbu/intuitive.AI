@@ -1,0 +1,21 @@
+extend type Query {
+  getSections: [Section] @resolve
+}
+
+extend type Mutation {
+  addSection(
+    section_name: String!
+  ): Section @resolve
+}
+
+extend type Mutation {
+  upSection(
+    id: ID!
+    section_name: String!
+  ): Section @resolve
+}
+
+extend type Mutation {
+  delSection(id: ID!): Section @resolve
+}
+

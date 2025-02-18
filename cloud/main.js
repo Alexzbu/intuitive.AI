@@ -1,2 +1,0 @@
-require('./section')
-require('./quiz')
