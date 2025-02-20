@@ -1,31 +1,53 @@
+const deleteSectionById = require("./deleteSection")
+
 Parse.Cloud.define('getCourses', async (req) => {
-   const query = new Parse.Query('Course');
+   const { name } = req.params
+
+   const query = new Parse.Query('Course')
+   if (name) {
+      query.equalTo("name", name);
+   }
+   query.include('sections')
    try {
-      const courseList = await query.find();
-      const courses = await Promise.all(
-         courseList.map(async (course) => {
-            const videosRelation = course.relation('sections')
-            const videos = await videosRelation.query().find()
-            return {
-               objectId: course.id,
-               course_name: course.get('name'),
-               videos: videos.map(video => ({
-                  objectId: video.id,
-                  video_name: video.get('video_name'),
-                  video_link: video.get('video_link')
-               }))
-            }
-         })
-      )
-      return courses;
+      const courseList = await query.find()
+      const allCourses = courseList.map((course) => {
+         return {
+            objectId: course.id,
+            name: course.get('name'),
+            sections: course.get('sections') || []
+         }
+      })
+      return allCourses
    } catch (error) {
       throw new Error(`Failed to fetch courses: ${error.message}`)
    }
 })
+
 Parse.Cloud.define('addCourse', async (req) => {
-   const { course_name } = req.params
+   // const { name, subtitle, objective, arget_group, ntry_requirements, self_assessment, target_profile,
+   //    participants_number, recommendation, trainer_skills, qualifications, description, categories,
+   //    technology, language, key_words, isFree, price, section } = req.params
+   const { name } = req.params
+
    const course = new Parse.Object('Course')
-   course.set('name', course_name)
+   course.set('name', name)
+   // course.set('subtitle', subtitle)
+   // course.set('objective', objective)
+   // course.set('arget_group', arget_group)
+   // course.set('ntry_requirements', ntry_requirements)
+   // course.set('self_assessment', self_assessment)
+   // course.set('target_profile', target_profile)
+   // course.set('participants_number', participants_number)
+   // course.set('recommendation', recommendation)
+   // course.set('trainer_skills', trainer_skills)
+   // course.set('qualifications', qualifications)
+   // course.set('description', description)
+   // course.set('categories', categories)
+   // course.set('technology', technology)
+   // course.set('language', language)
+   // course.set('key_words', key_words)
+   // course.set('isFree', isFree)
+   // course.set('price', price)
    try {
       const savedCourse = await course.save()
       return savedCourse.toJSON()
@@ -35,13 +57,15 @@ Parse.Cloud.define('addCourse', async (req) => {
    }
 })
 Parse.Cloud.define("upCourse", async (req) => {
+   // const { name, subtitle, objective, arget_group, ntry_requirements, self_assessment, target_profile,
+   //    participants_number, recommendation, trainer_skills, qualifications, description, categories,
+   //    technology, language, key_words, isFree, price, section } = req.params
    const { id, name } = req.params
 
    if (!id) {
       throw new Error("Course ID is required.")
    }
-   const course = Parse.Object.extend("Course")
-   const query = new Parse.Query(course)
+   const query = new Parse.Query("Course")
 
    try {
       const course = await query.get(id)
@@ -49,7 +73,24 @@ Parse.Cloud.define("upCourse", async (req) => {
       if (!course) {
          throw new Error("Course not found.")
       }
-      course.set("course_name", course_name);
+      course.set("name", name)
+      // course.set('subtitle', subtitle)
+      // course.set('objective', objective)
+      // course.set('arget_group', arget_group)
+      // course.set('ntry_requirements', ntry_requirements)
+      // course.set('self_assessment', self_assessment)
+      // course.set('target_profile', target_profile)
+      // course.set('participants_number', participants_number)
+      // course.set('recommendation', recommendation)
+      // course.set('trainer_skills', trainer_skills)
+      // course.set('qualifications', qualifications)
+      // course.set('description', description)
+      // course.set('categories', categories)
+      // course.set('technology', technology)
+      // course.set('language', language)
+      // course.set('key_words', key_words)
+      // course.set('isFree', isFree)
+      // course.set('price', price)
 
       const updatedCourse = await course.save()
       return updatedCourse.toJSON()
@@ -59,21 +100,26 @@ Parse.Cloud.define("upCourse", async (req) => {
 });
 
 Parse.Cloud.define("delCourse", async (req) => {
-   const { id } = req.params
+   const { id } = req.params;
 
    if (!id) {
-      throw new Error("Course ID is required.")
+      throw new Error("Course ID is required.");
    }
-   const course = Parse.Object.extend("Course")
-   const query = new Parse.Query(course)
+   const query = new Parse.Query("Course")
 
    try {
       const course = await query.get(id)
+      const sections = course.relation('sections')
+      const courseSections = await sections.query().find()
+      for (let section of courseSections) {
+         await deleteSectionById(section.id)
+      }
       await course.destroy()
       return course.toJSON()
    } catch (error) {
       throw new Error(`Failed to delete Course: ${error.message}`)
    }
-});
+})
+
 
 

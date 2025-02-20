@@ -1,106 +1,248 @@
-{
-   "className": "Course",
-   "fields": {
-      "name": {
-         "type": "String",
-         "required": true,
-         "unique": true
+[
+   {
+      "className": "Course",
+      "fields": {
+         "name": {
+            "type": "String",
+            "required": true,
+            "unique": true
+         },
+         "subtitle": {
+            "type": "String"
+         },
+         "objective": {
+            "type": "String"
+         },
+         "target_group": {
+            "type": "String"
+         },
+         "entry_requirements": {
+            "type": "Array"
+         },
+         "self_assessment": {
+            "type": "Array"
+         },
+         "target_profile": {
+            "type": "Array"
+         },
+         "participants_number": {
+            "type": "String"
+         },
+         "recommendation": {
+            "type": "String"
+         },
+         "trainer_skills": {
+            "type": "Array"
+         },
+         "qualifications": {
+            "type": "Array"
+         },
+         "description": {
+            "type": "String"
+         },
+         "categories": {
+            "type": "Array"
+         },
+         "technology": {
+            "type": "Array"
+         },
+         "language": {
+            "type": "Array"
+         },
+         "key_words": {
+            "type": "Array"
+         },
+         "isFree": {
+            "type": "Boolean"
+         },
+         "price": {
+            "type": "String"
+         },
+         "sections": {
+            "type": "Relation",
+            "targetClass": "Section"
+         },
+         "reviews": {
+            "type": "Relation",
+            "targetClass": "Review"
+         }
       },
-      "subtitle": {
-         "type": "String",
-         "required": true
-      },
-      "objective": {
-         "type": "String",
-         "required": true
-      },
-      "target_group": {
-         "type": "String",
-         "required": true
-      },
-      "entry_requirements": {
-         "type": "Array",
-         "required": true
-      },
-      "self_assessment": {
-         "type": "Array",
-         "required": true
-      },
-      "target_profile": {
-         "type": "Array",
-         "required": true
-      },
-      "participants_number": {
-         "type": "Number",
-         "required": true
-      },
-      "recommendation": {
-         "type": "String",
-         "required": true
-      },
-      "trainer_skills": {
-         "type": "Array",
-         "required": true
-      },
-      "qualifications": {
-         "type": "Array",
-         "required": true
-      },
-      "description": {
-         "type": "String",
-         "required": true
-      },
-      "categories": {
-         "type": "Array",
-         "required": true
-      },
-      "technology": {
-         "type": "Array",
-         "required": true
-      },
-      "language": {
-         "type": "Array",
-         "required": true
-      },
-      "key_words": {
-         "type": "Array",
-         "required": true
-      },
-      "isFree": {
-         "type": "Boolean",
-         "required": true
-      },
-      "price": {
-         "type": "String",
-         "required": true
-      },
-      "sections": {
-         "type": "Relation",
-         "targetClass": "Section"
-      },
-      "reviews": {
-         "type": "Relation",
-         "targetClass": "Review"
+      "classLevelPermissions": {
+         "find": {
+            "*": true
+         },
+         "count": {
+            "*": true
+         },
+         "get": {
+            "*": true
+         },
+         "update": {
+            "*": true
+         },
+         "create": {
+            "*": true
+         },
+         "delete": {
+            "*": true
+         }
       }
    },
-   "classLevelPermissions": {
-      "find": {
-         "*": true
+   {
+      "className": "Section",
+      "fields": {
+         "name": {
+            "type": "String",
+            "required": true,
+            "unique": true
+         },
+         "questions": {
+            "type": "Relation",
+            "targetClass": "Question"
+         }
       },
-      "count": {
-         "*": true
+      "classLevelPermissions": {
+         "find": {
+            "*": true
+         },
+         "count": {
+            "*": true
+         },
+         "get": {
+            "*": true
+         },
+         "update": {
+            "*": true
+         },
+         "create": {
+            "*": true
+         },
+         "delete": {
+            "*": true
+         }
+      }
+   },
+   {
+      "className": "Question",
+      "fields": {
+         "name": {
+            "type": "String",
+            "required": true
+         },
+         "question_type": {
+            "type": "String",
+            "required": true
+         },
+         "video_name": {
+            "type": "String"
+         },
+         "video_link": {
+            "type": "String"
+         },
+         "file_name": {
+            "type": "String"
+         },
+         "file": {
+            "type": "File"
+         },
+         "quiz_name": {
+            "type": "String"
+         },
+         "quiz_questions": {
+            "type": "Relation",
+            "targetClass": "Quiz_Question"
+         }
       },
-      "get": {
-         "*": true
+      "classLevelPermissions": {
+         "find": {
+            "*": true
+         },
+         "count": {
+            "*": true
+         },
+         "get": {
+            "*": true
+         },
+         "update": {
+            "*": true
+         },
+         "create": {
+            "*": true
+         },
+         "delete": {
+            "*": true
+         }
+      }
+   },
+   {
+      "className": "Quiz_Question",
+      "fields": {
+         "name": {
+            "type": "String",
+            "required": true,
+            "unique": true
+         },
+         "answer_explenetion": {
+            "type": "String"
+         },
+         "answers": {
+            "type": "Relation",
+            "targetClass": "Answer"
+         }
       },
-      "update": {
-         "*": true
+      "classLevelPermissions": {
+         "find": {
+            "*": true
+         },
+         "count": {
+            "*": true
+         },
+         "get": {
+            "*": true
+         },
+         "update": {
+            "*": true
+         },
+         "create": {
+            "*": true
+         },
+         "delete": {
+            "*": true
+         }
+      }
+   },
+   {
+      "className": "Answer",
+      "fields": {
+         "name": {
+            "type": "String",
+            "required": true,
+            "unique": true
+         },
+         "isCorrect": {
+            "type": "Boolean",
+            "default": false
+         }
       },
-      "create": {
-         "*": true
-      },
-      "delete": {
-         "*": true
+      "classLevelPermissions": {
+         "find": {
+            "*": true
+         },
+         "count": {
+            "*": true
+         },
+         "get": {
+            "*": true
+         },
+         "update": {
+            "*": true
+         },
+         "create": {
+            "*": true
+         },
+         "delete": {
+            "*": true
+         }
       }
    }
-}
+]

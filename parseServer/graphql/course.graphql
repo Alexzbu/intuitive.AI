@@ -1,0 +1,34 @@
+type Query {
+  getCourses(name: String): [Course] @resolve
+  getSections(name: String): [Section] @resolve
+  getQuestions: [Question] @resolve
+}
+
+type Mutation {
+  uploadFiles(files: [Upload!]!): UploadResponse @resolve
+
+  addCourse(name: String!): Course @resolve
+  upCourse(id: ID!, name: String!): Course @resolve
+  delCourse(id: ID!): Course @resolve
+
+  addSection(course_id: ID!, name: String!): Section @resolve
+  upSection(id: ID!, name: String!): Section @resolve
+  delSection(id: ID!): Section @resolve
+
+  addQuestion(section_id: ID!, name: String!, question_type: String!, video_name: String, video_link: String, 
+              pdf_file_name: String, pdf_file: Upload, quiz_name: String): Question @resolve
+  upQuestion(id: ID!, name: String, video_name: String, video_link: String, pdf_file_name: String, pdf_file: Upload, quiz_name: String): Question @resolve
+  delQuestion(id: ID!): Question @resolve
+
+  addQuiz_Question(question_id: ID!, name: String!, answer_explenetion: String): Quiz_Question @resolve
+  upQuiz_Question(id: ID!, name: String, answer_explenetion: String): Quiz_Question @resolve
+  delQuiz_Question(id: ID!): Quiz_Question @resolve
+
+  addAnswer(quiz_question_id: ID!, name: String!, isCorrect: Boolean): Answer @resolve
+  upAnswer(id: ID!, name: String!, isCorrect: Boolean): Answer @resolve
+  delAnswer(id: ID!): Answer @resolve
+}
+
+type UploadResponse {
+  success: Boolean!
+}
