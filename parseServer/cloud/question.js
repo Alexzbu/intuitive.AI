@@ -16,38 +16,47 @@ Parse.Cloud.define('getQuestions', async (req) => {
       throw new Error(`Failed to fetch questions: ${error.message}`)
    }
 })
-Parse.Cloud.define('addQuestion', async (req) => {
-   const { section_id, name, question_type, video_name, video_link, pdf_file_name, pdf_file, quiz_name } = req.params
-   console.log(pdf_file)
-   const query = new Parse.Query('Section')
-   const question = new Parse.Object('Question')
+Parse.Cloud.define("addQuestion", async (req) => {
+   const { section_id, name, question_type, video_name, video_link, file_name, file, quiz_name } = req.params;
+
+   const query = new Parse.Query("Section");
+   const question = new Parse.Object("Question");
+
    try {
-      question.set('name', name)
-      question.set('question_type', question_type)
-      if (question_type === 'Video') {
-         question.set('video_name', video_name)
-         question.set('video_link', video_link)
+      question.set("name", name);
+      question.set("question_type", question_type);
+
+      if (question_type === "Video") {
+         question.set("video_name", video_name);
+         question.set("video_link", video_link);
       }
       if (question_type === 'File') {
-         question.set('pdf_file_name', pdf_file_name)
-         question.set('pdf_file', pdf_file)
+         question.set('file_name', file_name)
+         console.log('File')
+         question.set('file', file)
       }
-      if (question_type === 'Quiz') {
-         question.set('quiz_name', quiz_name)
+
+
+      if (question_type === "Quiz") {
+         question.set("quiz_name", quiz_name);
       }
-      const savedQuestion = await question.save()
-      const section = await query.get(section_id)
-      const sectionRelation = section.relation('questions')
-      sectionRelation.add(savedQuestion)
-      await section.save()
-      return savedQuestion.toJSON()
+
+      const savedQuestion = await question.save();
+
+      const section = await query.get(section_id);
+      const sectionRelation = section.relation("questions");
+      sectionRelation.add(savedQuestion);
+      await section.save();
+
+      return savedQuestion.toJSON();
    } catch (error) {
-      console.error('Failed to save Question:', error)
-      throw new Parse.Error(Parse.Error.SCRIPT_FAILED, 'Failed to save Question')
+      console.error("Failed to save Question:", error);
+      throw new Parse.Error(Parse.Error.SCRIPT_FAILED, "Failed to save Question");
    }
 })
+
 Parse.Cloud.define("upQuestion", async (req) => {
-   const { id, name, question_type, video_name, video_link, pdf_file_name, pdf_file, quiz_name } = req.params
+   const { id, name, question_type, video_name, video_link, file_name, file, quiz_name } = req.params
 
    if (!id) {
       throw new Error("Question ID is required.")
@@ -66,8 +75,8 @@ Parse.Cloud.define("upQuestion", async (req) => {
          question.set('video_link', video_link)
       }
       if (question_type === 'File') {
-         question.set('pdf_file_name', pdf_file_name)
-         question.set('pdf_file', pdf_file)
+         question.set('file_name', file_name)
+         question.set('file', file)
       }
       if (question_type === 'Quiz') {
          question.set('quiz_name', quiz_name)

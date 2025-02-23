@@ -12,7 +12,7 @@ export default {
    masterKey: 'myMasterKey123',
    serverURL: 'http://localhost:3000/parse',
    publicServerURL: 'http://localhost:3000/parse',
-   verbose: true,
+   // verbose: true,
    encodeParseObjectInCloudFunction: true,
    schema: {
       definitions: Course,

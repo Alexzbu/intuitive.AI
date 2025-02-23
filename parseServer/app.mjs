@@ -21,6 +21,8 @@ const parseGraphQLServer = new ParseGraphQLServer(
 )
 app.use('/parse', parseServer.app)
 
+app.use('/graphql', express.json({ limit: '50mb' }))
+
 parseGraphQLServer.applyGraphQL(app)
 
 parseGraphQLServer.applyPlayground(app)
