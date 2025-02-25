@@ -1,3 +1,19 @@
+Parse.Cloud.define('getQuiz_Question', async (req) => {
+   const { id } = req.params
+
+   const query = new Parse.Query('Quiz_Question')
+
+   const quiz_question = await query.get(id)
+
+   query.include('answers')
+   return {
+      objectId: quiz_question.id,
+      name: quiz_question.get('name'),
+      answer_explenetion: quiz_question.get('answer_explenetion'),
+      answers: quiz_question.get('answers') || []
+   }
+})
+
 Parse.Cloud.define('getQuiz_Questions', async (req) => {
    const query = new Parse.Query('Quiz_Question')
    query.include('answers')
@@ -60,7 +76,7 @@ Parse.Cloud.define("upQuiz_Question", async (req) => {
    }
 });
 
-Parse.Cloud.define("delQuiz_question", async (req) => {
+Parse.Cloud.define("delQuiz_Question", async (req) => {
    const { id } = req.params;
 
    if (!id) {

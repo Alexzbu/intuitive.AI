@@ -24,30 +24,30 @@ Parse.Cloud.define('getCourses', async (req) => {
 })
 
 Parse.Cloud.define('addCourse', async (req) => {
-   // const { name, subtitle, objective, arget_group, ntry_requirements, self_assessment, target_profile,
-   //    participants_number, recommendation, trainer_skills, qualifications, description, categories,
-   //    technology, language, key_words, isFree, price, section } = req.params
-   const { name } = req.params
+   const { name, subtitle, objective, target_group, entry_requirements, self_assessment, target_profile,
+      participants_number, recommendation, trainer_skills, qualifications, description, categories,
+      technology, language, key_words, isFree, price } = req.params
 
    const course = new Parse.Object('Course')
    course.set('name', name)
-   // course.set('subtitle', subtitle)
-   // course.set('objective', objective)
-   // course.set('arget_group', arget_group)
-   // course.set('ntry_requirements', ntry_requirements)
-   // course.set('self_assessment', self_assessment)
-   // course.set('target_profile', target_profile)
-   // course.set('participants_number', participants_number)
-   // course.set('recommendation', recommendation)
-   // course.set('trainer_skills', trainer_skills)
-   // course.set('qualifications', qualifications)
-   // course.set('description', description)
-   // course.set('categories', categories)
-   // course.set('technology', technology)
-   // course.set('language', language)
-   // course.set('key_words', key_words)
-   // course.set('isFree', isFree)
-   // course.set('price', price)
+   course.set('subtitle', subtitle)
+   course.set('objective', objective)
+   course.set('target_group', target_group)
+   course.set('entry_requirements', entry_requirements)
+   course.set('self_assessment', self_assessment)
+   course.set('target_profile', target_profile)
+   course.set('participants_number', participants_number)
+   course.set('recommendation', recommendation)
+   course.set('trainer_skills', trainer_skills)
+   course.set('qualifications', qualifications)
+   course.set('description', description)
+   course.set('categories', categories)
+   course.set('technology', technology)
+   course.set('language', language)
+   course.set('key_words', key_words)
+   course.set('isFree', isFree)
+   course.set('price', price)
+
    try {
       const savedCourse = await course.save()
       return savedCourse.toJSON()
@@ -57,10 +57,9 @@ Parse.Cloud.define('addCourse', async (req) => {
    }
 })
 Parse.Cloud.define("upCourse", async (req) => {
-   // const { name, subtitle, objective, arget_group, ntry_requirements, self_assessment, target_profile,
-   //    participants_number, recommendation, trainer_skills, qualifications, description, categories,
-   //    technology, language, key_words, isFree, price, section } = req.params
-   const { id, name } = req.params
+   const { id, name, subtitle, objective, target_group, entry_requirements, self_assessment, target_profile,
+      participants_number, recommendation, trainer_skills, qualifications, description, categories,
+      technology, language, key_words, isFree, price } = req.params
 
    if (!id) {
       throw new Error("Course ID is required.")
@@ -73,24 +72,24 @@ Parse.Cloud.define("upCourse", async (req) => {
       if (!course) {
          throw new Error("Course not found.")
       }
-      course.set("name", name)
-      // course.set('subtitle', subtitle)
-      // course.set('objective', objective)
-      // course.set('arget_group', arget_group)
-      // course.set('ntry_requirements', ntry_requirements)
-      // course.set('self_assessment', self_assessment)
-      // course.set('target_profile', target_profile)
-      // course.set('participants_number', participants_number)
-      // course.set('recommendation', recommendation)
-      // course.set('trainer_skills', trainer_skills)
-      // course.set('qualifications', qualifications)
-      // course.set('description', description)
-      // course.set('categories', categories)
-      // course.set('technology', technology)
-      // course.set('language', language)
-      // course.set('key_words', key_words)
-      // course.set('isFree', isFree)
-      // course.set('price', price)
+      course.set('name', name)
+      course.set('subtitle', subtitle)
+      course.set('objective', objective)
+      course.set('target_group', target_group)
+      course.set('entry_requirements', entry_requirements)
+      course.set('self_assessment', self_assessment)
+      course.set('target_profile', target_profile)
+      course.set('participants_number', participants_number)
+      course.set('recommendation', recommendation)
+      course.set('trainer_skills', trainer_skills)
+      course.set('qualifications', qualifications)
+      course.set('description', description)
+      course.set('categories', categories)
+      course.set('technology', technology)
+      course.set('language', language)
+      course.set('key_words', key_words)
+      course.set('isFree', isFree)
+      course.set('price', price)
 
       const updatedCourse = await course.save()
       return updatedCourse.toJSON()

@@ -34,7 +34,7 @@ Parse.Cloud.define('addAnswer', async (req) => {
    }
 })
 Parse.Cloud.define("upAnswer", async (req) => {
-   const { name, isCorrect = false } = req.params
+   const { id, name, isCorrect = false } = req.params
 
    if (!id) {
       throw new Error("Answer ID is required.")

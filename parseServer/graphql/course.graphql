@@ -1,28 +1,107 @@
 type Query {
   getCourses(name: String): [Course] @resolve
   getSections(name: String): [Section] @resolve
-  getQuestions: [Question] @resolve
+  getQuestions(name: String): [Question] @resolve
+  getQuestion(id: ID!): Question @resolve
+  getQuiz_Questions: [Quiz_Question] @resolve
+  getQuiz_Question(id: ID!): Quiz_Question @resolve
 }
 
 type Mutation {
-  addCourse(name: String!): Course @resolve
-  upCourse(id: ID!, name: String!): Course @resolve
+  addCourse(
+    name: String!,
+    subtitle: String,
+    objective: String,
+    target_group: String,
+    entry_requirements: [String],
+    self_assessment: [String],
+    target_profile: [String],
+    participants_number: String,
+    recommendation: String,
+    trainer_skills: [String],
+    qualifications: [String],
+    description: String,
+    categories: [String],
+    technology: [String],
+    language: [String],
+    key_words: [String],
+    isFree: Boolean,
+    price: String,
+    ): Course @resolve
+  upCourse(
+    id: ID!,
+    name: String!
+    subtitle: String,
+    objective: String,
+    target_group: String,
+    entry_requirements: [String],
+    self_assessment: [String],
+    target_profile: [String],
+    participants_number: String,
+    recommendation: String,
+    trainer_skills: [String],
+    qualifications: [String],
+    description: String,
+    categories: [String],
+    technology: [String],
+    language: [String],
+    key_words: [String],
+    isFree: Boolean,
+    price: String,
+    ): Course @resolve
   delCourse(id: ID!): Course @resolve
 
   addSection(course_id: ID!, name: String!): Section @resolve
   upSection(id: ID!, name: String!): Section @resolve
   delSection(id: ID!): Section @resolve
 
-  addQuestion(section_id: ID!, name: String!, question_type: String!, video_name: String, video_link: String, 
-              file_name: String, file: String, quiz_name: String): Question @resolve
-  upQuestion(id: ID!, name: String, video_name: String, video_link: String, file_name: String, file: String, quiz_name: String): Question @resolve
+  addQuestion(
+    section_id: ID!,
+    name: String!,
+    question_type: String!,
+    video_name: String,
+    video_link: String, 
+    file_name: String,
+    file: String,
+    quiz_name: String
+    ): Question @resolve
+
+  upQuestion(id: ID!,
+    name: String,
+    video_name: String,
+    video_link: String,
+    file_name: String,
+    file: String,
+    quiz_name: String
+    ): Question @resolve
+
   delQuestion(id: ID!): Question @resolve
 
-  addQuiz_Question(question_id: ID!, name: String!, answer_explenetion: String): Quiz_Question @resolve
-  upQuiz_Question(id: ID!, name: String, answer_explenetion: String): Quiz_Question @resolve
+  addQuiz_Question(
+    question_id: ID!,
+    name: String!,
+    answer_explenetion: String
+    ): Quiz_Question @resolve
+
+  upQuiz_Question(
+    id: ID!,
+    name: String,
+    answer_explenetion: String
+    ): Quiz_Question @resolve
+
   delQuiz_Question(id: ID!): Quiz_Question @resolve
 
-  addAnswer(quiz_question_id: ID!, name: String!, isCorrect: Boolean): Answer @resolve
-  upAnswer(id: ID!, name: String!, isCorrect: Boolean): Answer @resolve
+  addAnswer(
+    quiz_question_id: ID!,
+    name: String!,
+    isCorrect: Boolean
+    ): Answer @resolve
+
+  upAnswer(
+    id: ID!,
+    name: String!,
+    isCorrect: Boolean
+    ): Answer @resolve
+
   delAnswer(id: ID!): Answer @resolve
 }

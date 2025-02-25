@@ -1,7 +1,12 @@
 const deleteSectionById = require("./deleteSection")
 
 Parse.Cloud.define('getSections', async (req) => {
+   const { name } = req.params
+
    const query = new Parse.Query('Section')
+   if (name) {
+      query.equalTo("name", name);
+   }
    query.include('questions')
    try {
       const sectionList = await query.find()

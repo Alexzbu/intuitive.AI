@@ -1,24 +1,53 @@
-Parse.Cloud.define('getQuestions', async (req) => {
+Parse.Cloud.define('getQuestion', async (req) => {
+   const { id } = req.params
+
    const query = new Parse.Query('Question')
+
+   const question = await query.get(id)
+
+   query.include('quiz_questions')
+   return {
+      objectId: question.id,
+      name: question.get('name'),
+      question_type: question.get('question_type'),
+      video_name: question.get('video_name'),
+      video_link: question.get('video_link'),
+      file_name: question.get('file_name'),
+      file: question.get('file'),
+      quiz_name: question.get('quiz_name'),
+      quiz_questions: question.get('quiz_questions') || [],
+      section: question.get('section')
+   }
+})
+
+Parse.Cloud.define('getQuestions', async (req) => {
+   const { name } = req.params
+
+   const query = new Parse.Query('Question')
+   if (name) {
+      query.equalTo("name", name);
+   }
    query.include('quiz_questions')
    try {
       const questionList = await query.find()
       return questionList.map(question => ({
          objectId: question.id,
          name: question.get('name'),
+         question_type: question.get('question_type'),
          video_name: question.get('video_name'),
          video_link: question.get('video_link'),
          file_name: question.get('file_name'),
+         file: question.get('file'),
          quiz_name: question.get('quiz_name'),
-         quiz_questions: question.get('quiz_questions') || []
+         quiz_questions: question.get('quiz_questions') || [],
+         section: question.get('section')
       }))
    } catch (error) {
       throw new Error(`Failed to fetch questions: ${error.message}`)
    }
 })
 Parse.Cloud.define("addQuestion", async (req) => {
-   const { section_id, name, question_type, video_name, video_link, file_name, file, quiz_name } = req.params;
-
+   const { section_id, name, question_type, video_name, video_link, file_name, file, quiz_name } = req.params
    const query = new Parse.Query("Section");
    const question = new Parse.Object("Question");
 
@@ -32,21 +61,23 @@ Parse.Cloud.define("addQuestion", async (req) => {
       }
       if (question_type === 'File') {
          question.set('file_name', file_name)
-         console.log('File')
-         question.set('file', file)
+         const parseFile = new Parse.File(file_name, { base64: file })
+         question.set('file', parseFile)
       }
 
 
       if (question_type === "Quiz") {
-         question.set("quiz_name", quiz_name);
+         question.set("quiz_name", quiz_name)
       }
+      const section = await query.get(section_id)
 
-      const savedQuestion = await question.save();
+      question.relation('section').add(section)
+      const savedQuestion = await question.save()
 
-      const section = await query.get(section_id);
-      const sectionRelation = section.relation("questions");
-      sectionRelation.add(savedQuestion);
-      await section.save();
+
+      const sectionRelation = section.relation("questions")
+      sectionRelation.add(savedQuestion)
+      await section.save()
 
       return savedQuestion.toJSON();
    } catch (error) {
@@ -69,16 +100,19 @@ Parse.Cloud.define("upQuestion", async (req) => {
       if (!question) {
          throw new Error("Question not found.")
       }
+      const type = question.get('question_type')
       question.set("name", name)
-      if (question_type === 'Video') {
+      if (type === 'Video') {
          question.set('video_name', video_name)
          question.set('video_link', video_link)
       }
-      if (question_type === 'File') {
+      if (type === 'File') {
          question.set('file_name', file_name)
-         question.set('file', file)
+         question.get('file').destroy()
+         const parseFile = new Parse.File(file_name, { base64: file })
+         question.set('file', parseFile)
       }
-      if (question_type === 'Quiz') {
+      if (type === 'Quiz') {
          question.set('quiz_name', quiz_name)
       }
 
@@ -87,7 +121,7 @@ Parse.Cloud.define("upQuestion", async (req) => {
    } catch (error) {
       throw new Error(`Failed to update Question: ${error.message}`)
    }
-});
+})
 
 Parse.Cloud.define("delQuestion", async (req) => {
    const { id } = req.params
@@ -99,9 +133,12 @@ Parse.Cloud.define("delQuestion", async (req) => {
 
    try {
       const question = await query.get(id)
+      if (question.get("question_type") === "File") {
+         question.get('file').destroy()
+      }
+
       let quizQuestionsToDelete = []
       let quizAnswersToDelete = []
-
       if (question.get("question_type") === "Quiz") {
          const quizQuestionsRelation = question.relation("quiz_questions")
          const quizQuestions = await quizQuestionsRelation.query().find()
@@ -117,6 +154,7 @@ Parse.Cloud.define("delQuestion", async (req) => {
 
          await Parse.Object.destroyAll(quizQuestionsToDelete)
       }
+      await question.destroy()
       return question.toJSON()
    } catch (error) {
       throw new Error(`Failed to delete Question: ${error.message}`)

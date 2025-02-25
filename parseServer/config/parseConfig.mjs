@@ -14,6 +14,9 @@ export default {
    publicServerURL: 'http://localhost:3000/parse',
    // verbose: true,
    encodeParseObjectInCloudFunction: true,
+   fileUpload: {
+      enableForPublic: true,
+   },
    schema: {
       definitions: Course,
       lockSchemas: true,
