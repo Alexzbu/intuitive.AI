@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import AddVideo from './video-question'
 import AddFile from './file-question'
+import AddQuiz from './quiz-question'
 
 const AddQuestions = ({ sectionId, sectionName }) => {
    const [isVideo, setIsVideo] = useState(false)
@@ -20,7 +21,7 @@ const AddQuestions = ({ sectionId, sectionName }) => {
             </div>
             {isVideo && <AddVideo sectionId={sectionId} isVideo={isVideo} setIsVideo={setIsVideo} />}
             {isFile && <AddFile sectionId={sectionId} isFile={isFile} setIsFile={setIsFile} />}
-            {isQuiz && <p>akhhrblbtbviuubdttivubetituv</p>}
+            {isQuiz && <AddQuiz sectionId={sectionId} isQuiz={isQuiz} setIsQuiz={setIsQuiz} />}
          </div>
       </>
    )

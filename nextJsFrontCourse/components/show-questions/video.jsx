@@ -21,7 +21,7 @@ const Video = ({ questionId }) => {
    return (
       <>
          <div className="question">
-            <iframe className="description__video"
+            <iframe className="question__video"
                src={data?.getQuestion.video_link} title="YouTube video player"
                frameBorder="0"
                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

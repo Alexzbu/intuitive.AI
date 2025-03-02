@@ -30,7 +30,6 @@ const PDF = ({ questionId }) => {
                   className="pdf-viewer"
                   src={pdfUrl}
                   title="PDF Viewer"
-                  style={{ width: "100%", height: "430px", border: "none" }}
                />
                <Link href={pdfUrl} target="_blank" className="course-card__link">Open</Link>
             </>

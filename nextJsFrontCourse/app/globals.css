@@ -387,14 +387,26 @@ body {
    min-height: 450px;
 }
 
-.description__video {
+.question__video {
    /* width:560px;
    height:315px; */
    width: 100%;
    aspect-ratio: 532/328;
    object-fit: cover;
+   border-radius: 20px;
 }
-
+.pdf-viewer{
+   border-radius: 20px;
+   width: 100%;
+   height: 430px;
+   border: none;
+}
+.answer-box{
+   /* display: flex; */
+}
+.is-correct{
+   display: flex;
+}
 .loading {
    position: absolute;
    width: 70px;
