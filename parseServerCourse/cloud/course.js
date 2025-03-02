@@ -1,5 +1,21 @@
 const deleteSectionById = require("./deleteSection")
 
+Parse.Cloud.define('getCourse', async (req) => {
+   const { id } = req.params
+
+   const query = new Parse.Query('Course')
+   query.include('sections')
+
+   const course = await query.get(id)
+
+   return {
+      objectId: course.id,
+      name: course.get('name'),
+      description: course.get('description'),
+      sections: course.get('sections') || [],
+   }
+})
+
 Parse.Cloud.define('getCourses', async (req) => {
    const { name } = req.params
 
@@ -14,6 +30,7 @@ Parse.Cloud.define('getCourses', async (req) => {
          return {
             objectId: course.id,
             name: course.get('name'),
+            description: course.get('description'),
             sections: course.get('sections') || []
          }
       })

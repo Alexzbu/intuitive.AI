@@ -1,4 +1,5 @@
 type Query {
+  getCourse(id: ID!): Course @resolve
   getCourses(name: String): [Course] @resolve
   getSections(name: String): [Section] @resolve
   getSection(id: ID!): Section @resolve
