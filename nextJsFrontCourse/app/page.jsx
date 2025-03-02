@@ -8,12 +8,15 @@ import Loading from '@/components/Loading'
 
 const GET_COURSES_QUERY = gql`
             query getCourses {
-               getCourses {
-               objectId
-               name
-               description
-               }
-            }`
+                    getCourses {
+                      objectId
+                      name
+                      description
+                      sections{
+                        count
+                      }
+                    }
+              }`
 
 const DEL_COURSE_MUTATION = gql`
             mutation delCourse($id: ID!) {
@@ -80,12 +83,13 @@ export default function Home() {
         {data?.getCourses.length === 0 && !loading && (<h2>NO COURSES FOUND</h2>)}
         {data?.getCourses?.map((course) => (
           <div className="course-card" key={course.objectId}>
-            <Link href={`/course-detail/${course.objectId}`}>
+            <Link className="nav__link" href={`/course-details?id=${course.objectId}`}>
               {/* <Link to={`/course-detail/${course.objectId}`}></Link> */}
               <h2 className="course-card__title">{course.name}</h2>
+              <p className="course-card__number">Description: {course.description}</p>
+              <p className="course-card__number">Price (hour):$</p>
+              <p className="course-card__number">Number of sections: {course.sections.count}</p>
             </Link>
-            {/* <p className="course-card__number">Price (hour): {item.price}$</p>
-            <p className="course-card__number">Location: {item.location?.title}</p> */}
             {/* {isAuthenticated && ( */}
             <div className="course-card__actions">
               <button className="course-card__link delete-button"

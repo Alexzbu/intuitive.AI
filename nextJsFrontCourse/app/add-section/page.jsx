@@ -37,7 +37,6 @@ const AddSection = () => {
             ...prevSections,
             { sectionId: data.addSection.objectId, sectionName: data.addSection.name },
          ])
-         console.log(sections)
       } catch (error) {
          setErrors(error.response.data)
          console.error('Error adding section:', error)
@@ -49,7 +48,7 @@ const AddSection = () => {
          {sections?.map((section) => (
             <AddQuestions sectionId={section.sectionId} sectionName={section.sectionName} key={section.sectionId} />
          ))}
-         <h1 className="title">Add new section</h1>
+         <h1 className="title">{sections.length > 0 ? "Add another section" : "Add new section"}</h1>
          <div className="form">
             <label className="form__label" htmlFor="title">Name of the section:</label>
             <input

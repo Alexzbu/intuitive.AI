@@ -368,6 +368,33 @@ body {
    /* color: white; */
 }
 
+.course__box{
+   display: flex;
+   background-color: #c7c7c7;
+   padding: 30px;
+   border-radius: 20px;
+}
+.sections{
+   min-width: 150px;
+}
+
+.question{
+   width: 100%;
+}
+.question-card{
+   padding-left: 30px;
+   width: 100%;
+   min-height: 450px;
+}
+
+.description__video {
+   /* width:560px;
+   height:315px; */
+   width: 100%;
+   aspect-ratio: 532/328;
+   object-fit: cover;
+}
+
 .loading {
    position: absolute;
    width: 70px;

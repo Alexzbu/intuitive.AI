@@ -74,8 +74,6 @@ const AddCourse = () => {
             },
          })
 
-         console.log("Course added:", data.addCourse)
-
          if (data.addCourse.objectId) {
             router.push(`/add-section?id=${data.addCourse.objectId}`)
          }
