@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { gql, useQuery, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
 import Loading from '@/components/Loading'
@@ -27,6 +28,7 @@ const DEL_COURSE_MUTATION = gql`
             }`
 
 export default function Home() {
+  const router = useRouter()
   const [page, setPage] = useState(0)
   const [filter, setFilter] = useState('')
   const [sort, setSort] = useState('')
@@ -96,7 +98,10 @@ export default function Home() {
                 onClick={() => deleteItem(course.objectId)}
                 disabled={delLoading}>Remove
               </button>
-              <button className="course-card__link" >Edit</button>
+              <button className="course-card__link"
+                onClick={() => router.push(`/update-course?id=${course.objectId}`)}
+              >Edit
+              </button>
             </div>
             {/* )} */}
           </div>

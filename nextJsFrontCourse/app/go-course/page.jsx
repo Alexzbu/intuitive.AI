@@ -6,6 +6,7 @@ import { gql, useQuery } from "@apollo/client"
 import client from "@/utils/apolloClient"
 import Video from "@/components/show-questions/video"
 import PDF from "@/components/show-questions/pdf-file"
+import Quiz from "@/components/show-questions/quiz"
 
 const GET_COURSE_QUERY = gql`
    query getCourse($id: ID!) {
@@ -24,6 +25,7 @@ const GET_COURSE_QUERY = gql`
                            question_type
                            video_name
                            file_name
+                           quiz_name
                         }
                      }
                   }

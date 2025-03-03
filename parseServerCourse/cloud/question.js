@@ -108,9 +108,11 @@ Parse.Cloud.define("upQuestion", async (req) => {
       }
       if (type === 'File') {
          question.set('file_name', file_name)
-         question.get('file').destroy()
-         const parseFile = new Parse.File(file_name, { base64: file })
-         question.set('file', parseFile)
+         if (file) {
+            question.get('file').destroy()
+            const parseFile = new Parse.File(file_name, { base64: file })
+            question.set('file', parseFile)
+         }
       }
       if (type === 'Quiz') {
          question.set('quiz_name', quiz_name)

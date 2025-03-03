@@ -401,9 +401,7 @@ body {
    height: 430px;
    border: none;
 }
-.answer-box{
-   /* display: flex; */
-}
+
 .is-correct{
    display: flex;
 }

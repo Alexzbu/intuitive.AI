@@ -11,6 +11,7 @@ Parse.Cloud.define('getCourse', async (req) => {
    return {
       objectId: course.id,
       name: course.get('name'),
+      subtitle: course.get('subtitle'),
       description: course.get('description'),
       sections: course.get('sections') || [],
    }
@@ -30,6 +31,7 @@ Parse.Cloud.define('getCourses', async (req) => {
          return {
             objectId: course.id,
             name: course.get('name'),
+            subtitle: course.get('subtitle'),
             description: course.get('description'),
             sections: course.get('sections') || []
          }
