@@ -12,6 +12,8 @@ Parse.Cloud.define('getCourse', async (req) => {
       objectId: course.id,
       name: course.get('name'),
       subtitle: course.get('subtitle'),
+      objective: course.get('objective'),
+      target_group: course.get('target_group'),
       description: course.get('description'),
       sections: course.get('sections') || [],
    }

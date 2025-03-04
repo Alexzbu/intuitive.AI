@@ -1,0 +1,56 @@
+{
+   "className": "Question",
+   "fields": {
+      "name": {
+         "type": "String",
+         "required": true
+      },
+      "question_type": {
+         "type": "String",
+         "required": true
+      },
+      "video_name": {
+         "type": "String"
+      },
+      "video_link": {
+         "type": "String"
+      },
+      "file_name": {
+         "type": "String"
+      },
+      "file": {
+         "type": "File"
+      },
+      "quiz_name": {
+         "type": "String"
+      },
+      "quiz_questions": {
+         "type": "Relation",
+         "targetClass": "Quiz_Question"
+      },
+      "section": {
+         "type": "Pointer",
+         "targetClass": "Section"
+      }
+   },
+   "classLevelPermissions": {
+      "find": {
+         "*": true
+      },
+      "count": {
+         "*": true
+      },
+      "get": {
+         "*": true
+      },
+      "update": {
+         "*": true
+      },
+      "create": {
+         "*": true
+      },
+      "delete": {
+         "*": true
+      }
+   }
+}

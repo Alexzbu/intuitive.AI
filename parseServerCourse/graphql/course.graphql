@@ -108,4 +108,8 @@ type Mutation {
     ): Answer @resolve
 
   delAnswer(id: ID!): Answer @resolve
+
+  aiAssistent: Object @resolve
+  aiAssistent(course_id: ID, questionsHistory: [String], resObjectsHistory: [Object]): Object @resolve
+
 }

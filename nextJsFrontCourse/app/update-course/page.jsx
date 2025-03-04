@@ -11,16 +11,20 @@ const GET_COURSE_QUERY = gql`
                objectId
                name
                subtitle
+               objective
+               target_group
                description 
             }
          }`
 
 const UP_COURSE_MUTATION = gql`
-            mutation upCourse($id: ID!, $name: String!, $subtitle: String!, $description: String!) {
-               upCourse(id: $id, name: $name, subtitle: $subtitle, description: $description) {
+            mutation upCourse($id: ID!, $name: String!, $subtitle: String!, $objective: String!, $target_group: String, $description: String!) {
+               upCourse(id: $id, name: $name, subtitle: $subtitle, objective: $objective, target_group: $target_group, description: $description) {
                objectId
                name
                subtitle
+               objective
+               target_group
                description
                }
             }`
@@ -29,6 +33,8 @@ const UpdateCourse = () => {
    const router = useRouter()
    const [title, setTitle] = useState('')
    const [subtitle, setSubtitle] = useState('')
+   const [objective, setObjective] = useState('')
+   const [target_group, setTarget_group] = useState('')
    const [description, setDescription] = useState('')
    const [errors, setErrors] = useState({})
    const [upCourse] = useMutation(UP_COURSE_MUTATION, { client })
@@ -42,6 +48,8 @@ const UpdateCourse = () => {
    useEffect(() => {
       setTitle(CourseData?.getCourse.name)
       setSubtitle(CourseData?.getCourse.subtitle)
+      setObjective(CourseData?.getCourse.objective)
+      setTarget_group(CourseData?.getCourse.target_group)
       setDescription(CourseData?.getCourse.description)
 
       refetch()
@@ -53,6 +61,8 @@ const UpdateCourse = () => {
             variables: {
                id: courseId,
                name: title,
+               objective: objective,
+               target_group: target_group,
                subtitle: subtitle,
                description: description,
             },
@@ -91,6 +101,27 @@ const UpdateCourse = () => {
             />
             {errors.subtitle && <span className="error">{errors.subtitle}</span>}
 
+            <label className="form__label" htmlFor="subtitle">Objective:</label>
+            <input
+               className="form__input"
+               type="text"
+               id="objective"
+               name="objective"
+               value={objective ?? ""}
+               onChange={(e) => setObjective(e.target.value)}
+            />
+            {errors.objective && <span className="error">{errors.objective}</span>}
+
+            <label className="form__label" htmlFor="subtitle">Target_group:</label>
+            <input
+               className="form__input"
+               type="text"
+               id="target_group"
+               name="target_group"
+               value={target_group ?? ""}
+               onChange={(e) => setTarget_group(e.target.value)}
+            />
+            {errors.target_group && <span className="error">{errors.target_group}</span>}
 
             <label className="form__label" htmlFor="description">Description:</label>
             <textarea

@@ -1,0 +1,31 @@
+{
+   "className": "AI_Assistent",
+   "fields": {
+      "request": {
+         "type": "Array"
+      },
+      "response": {
+         "type": "Array"
+      }
+   },
+   "classLevelPermissions": {
+      "find": {
+         "*": true
+      },
+      "count": {
+         "*": true
+      },
+      "get": {
+         "*": true
+      },
+      "update": {
+         "*": true
+      },
+      "create": {
+         "*": true
+      },
+      "delete": {
+         "*": true
+      }
+   }
+}

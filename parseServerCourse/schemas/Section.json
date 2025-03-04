@@ -1,0 +1,38 @@
+{
+   "className": "Section",
+   "fields": {
+      "name": {
+         "type": "String",
+         "required": true,
+         "unique": true
+      },
+      "questions": {
+         "type": "Relation",
+         "targetClass": "Question"
+      },
+      "course": {
+         "type": "Pointer",
+         "targetClass": "Course"
+      }
+   },
+   "classLevelPermissions": {
+      "find": {
+         "*": true
+      },
+      "count": {
+         "*": true
+      },
+      "get": {
+         "*": true
+      },
+      "update": {
+         "*": true
+      },
+      "create": {
+         "*": true
+      },
+      "delete": {
+         "*": true
+      }
+   }
+}

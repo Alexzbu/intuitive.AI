@@ -401,9 +401,20 @@ body {
    height: 430px;
    border: none;
 }
-
 .is-correct{
    display: flex;
+}
+.chat-container__chat{
+   margin-bottom: 10px;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-end;
+}
+.actions-button__item:not(:last-child){
+margin-right: 30px;
+}
+.actions-button__item--close{
+   background-color: red;
 }
 .loading {
    position: absolute;
