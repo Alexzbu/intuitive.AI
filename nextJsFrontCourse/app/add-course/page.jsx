@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { gql, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
 import { useRouter } from "next/navigation"
@@ -15,9 +15,22 @@ const ADD_COURSE_MUTATION = gql`
             }`
 
 const AI_ASSISTENT = gql`
-           mutation aiAssistent($course_id: ID, $questionsHistory: [String], $resObjectsHistory: [Object]) {
+           mutation aiAssistent($course_id: ID, $questionsHistory: String, $resObjectsHistory: [Object]) {
                aiAssistent(course_id: $course_id, questionsHistory: $questionsHistory, resObjectsHistory: $resObjectsHistory)
             }`
+
+const GET_AI_ASSISTENT_HISTORY = gql`
+            mutation getAiAssistentHistory($request: String!) {
+               getAiAssistentHistory(request: $request) {
+                  objectId
+                  request
+                  response{
+                     name
+                     content
+                  }
+               }
+            }
+            `
 
 const AddCourse = () => {
    const router = useRouter()
@@ -28,14 +41,25 @@ const AddCourse = () => {
    const [recommendation, setRecommendation] = useState('')
    const [key_words, setKey_words] = useState('')
    const [description, setDescription] = useState('')
+   const [functions, setFunctions] = useState([setTitle, setSubtitle, setObjective, setTarget_group, setRecommendation, setKey_words, setDescription])
    const [errors, setErrors] = useState({})
    const [showAI, setShowAI] = useState(false)
-   // const [questionFoDisplay, setquestionFoDisplay] = useState("")
-   // const [resObjects, setResObjects] = useState([])
+   const [search, setSearch] = useState('')
+   const [history, setHistory] = useState([])
+   const [resObjects, setResObjects] = useState([])
+   const [response, setResponse] = useState(false)
    const [questionsHistory, setQuestionsHistory] = useState([])
    const [resObjectsHistory, setresObjectsHistory] = useState([])
    const [addCourse] = useMutation(ADD_COURSE_MUTATION, { client })
    const [aiAssistent] = useMutation(AI_ASSISTENT, { client })
+   const [fetchHistory] = useMutation(GET_AI_ASSISTENT_HISTORY, { client })
+
+   useEffect(() => {
+
+      if (search) {
+         fetchAiHistory()
+      }
+   }, [search])
 
    const sendForm = async () => {
       try {
@@ -51,15 +75,15 @@ const AddCourse = () => {
             },
          })
 
-         await aiAssistent({
-            variables: {
-               course_id: data.addCourse.objectId,
-               questionsHistory: questionsHistory,
-               resObjectsHistory: resObjectsHistory
-            }
-         })
-         // console.log(data.addCourse.objectId)
-         // console.log(resObjectsHistory)
+         if (questionsHistory.length > 0) {
+            await aiAssistent({
+               variables: {
+                  course_id: data.addCourse.objectId,
+                  questionsHistory: questionsHistory[0],
+                  resObjectsHistory: resObjectsHistory[resObjectsHistory.length - 1]
+               }
+            })
+         }
 
          if (data.addCourse.objectId) {
             router.push(`/add-section?id=${data.addCourse.objectId}`)
@@ -70,17 +94,71 @@ const AddCourse = () => {
       }
    }
 
+   const fetchAiHistory = async () => {
+      try {
+         const { data } = await fetchHistory({
+            variables: { request: search }
+         })
+         setHistory(data?.getAiAssistentHistory)
+
+         if (data.getAiAssistentHistory.length > 0) {
+            setResponse(true)
+         }
+         else {
+            setResponse(false)
+         }
+
+      } catch (error) {
+         console.error("Error:", error)
+      }
+   }
+
+   const fillFields = (index) => {
+      history[index].response.forEach((item, index) => {
+         functions[index](item.content)
+      })
+      setSearch('')
+      setResponse(false)
+   }
+
    return (
       <div className="container">
+         <div className="add-couse__search search">
+            <input
+               className="search__field search__field--add-course"
+               type="search"
+               value={search}
+               onChange={(e) => setSearch(e.target.value)}
+
+               placeholder="Find previous questions"
+            />
+            {/* {response && */}
+            <div className={response && search ? "search__result result result--visible" : "search__result result"}>
+               <ul className="result__items search-items">
+                  {history?.map((item, index) =>
+                     <li className="search-items__item" key={index}>
+                        <button
+                           className="item__button"
+                           onClick={() => fillFields(index)}
+                        >
+                           {item.request}
+                        </button>
+                     </li>
+                  )}
+               </ul>
+            </div>
+            {/* } */}
+         </div>
          <h1 className="title">Add new course</h1>
          <div className="form">
-            {showAI &&
-               <Chatbot setTitle={setTitle} setSubtitle={setSubtitle} setObjective={setObjective}
-                  setTarget_group={setTarget_group} setRecommendation={setRecommendation}
-                  setKey_words={setKey_words} setDescription={setDescription} setShowAI={setShowAI}
-                  questionsHistory={questionsHistory} setQuestionsHistory={setQuestionsHistory}
-                  resObjectsHistory={resObjectsHistory} setresObjectsHistory={setresObjectsHistory} />
-            }
+            {/* {showAI && */}
+            <Chatbot setTitle={setTitle} setSubtitle={setSubtitle} setObjective={setObjective}
+               setTarget_group={setTarget_group} setRecommendation={setRecommendation}
+               setKey_words={setKey_words} setDescription={setDescription} setShowAI={setShowAI}
+               questionsHistory={questionsHistory} setQuestionsHistory={setQuestionsHistory}
+               resObjectsHistory={resObjectsHistory} setresObjectsHistory={setresObjectsHistory}
+               showAI={showAI} />
+            {/* } */}
             {!showAI &&
                <button
                   className="form__button actions-button__item actions-button__item--AI"

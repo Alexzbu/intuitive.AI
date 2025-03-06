@@ -1,10 +1,29 @@
 const OpenAI = require("openai")
 
+Parse.Cloud.define('getAiAssistentHistory', async (req) => {
+   const { request } = req.params
+   const query = new Parse.Query('AI_Assistent')
+   if (request) {
+      query.contains("request", request.toLowerCase())
+   }
+   try {
+      const aIAssistentList = await query.find()
+      const allAssistens = aIAssistentList.map((assistent) => {
+         return assistent
+      })
+      return allAssistens
+   } catch (error) {
+      throw new Error(`Failed to fetch courses: ${error.message}`)
+   }
+
+})
+
 Parse.Cloud.define('aiAssistent', async (req) => {
-   const { course_id, questionsHistory, resObjectsHistory } = req.params
+   const { course_id, request, questionsHistory, resObjectsHistory } = req.params
 
    const query = new Parse.Query('Course')
    const aiAssistent = new Parse.Object('AI_Assistent')
+
    try {
       if (questionsHistory) {
          aiAssistent.set('request', questionsHistory)
@@ -18,33 +37,32 @@ Parse.Cloud.define('aiAssistent', async (req) => {
       const response = [
          {
             name: "course title",
-            content: "Correct title",
+            content: `Correct title for ${request}`,
          },
          {
             name: "course subtitle",
-            content: "Correct subtitle",
+            content: `Correct subtitle for ${request}`,
          },
          {
             name: "course objective",
-            content: "Correct objective",
+            content: `Correct objective for ${request}`,
          },
          {
             name: "course target_group",
-            content: "Correct target_group",
+            content: `Correct target_group for ${request}`,
          },
          {
             name: "course recommendation",
-            content: "Correct recommendation",
+            content: `Correct recommendation for ${request}`,
          },
          {
             name: "course key_words",
-            content: "Correct key_words",
+            content: `Correct key_words for ${request}`,
          },
          {
             name: "course description",
-            content: "Correct description",
+            content: `Correct description for ${request}`,
          },
-
       ]
 
       return response

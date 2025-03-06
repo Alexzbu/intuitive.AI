@@ -9,7 +9,15 @@ type Query {
   getQuiz_Question(id: ID!): Quiz_Question @resolve
   getAnswers: [Answer] @resolve
 }
-
+type responseNodeType {
+  name: String
+  content: String
+}
+type Assistent {
+  objectId: ID
+  request: String
+  response: [responseNodeType]
+}
 type Mutation {
   addCourse(
     name: String!,
@@ -109,7 +117,9 @@ type Mutation {
 
   delAnswer(id: ID!): Answer @resolve
 
-  aiAssistent: Object @resolve
-  aiAssistent(course_id: ID, questionsHistory: [String], resObjectsHistory: [Object]): Object @resolve
+  aiAssistent(request: String): Object @resolve
+  aiAssistent(course_id: ID, questionsHistory: String, resObjectsHistory: [Object]): Object @resolve
+  getAiAssistentHistory(request: String!): [Assistent] @resolve
+
 
 }

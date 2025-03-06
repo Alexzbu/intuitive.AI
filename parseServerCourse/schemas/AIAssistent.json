@@ -2,7 +2,7 @@
    "className": "AI_Assistent",
    "fields": {
       "request": {
-         "type": "Array"
+         "type": "String"
       },
       "response": {
          "type": "Array"

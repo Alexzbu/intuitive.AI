@@ -1,30 +1,51 @@
 import { useState } from "react"
-import { gql, useMutation } from "@apollo/client"
+import { gql, useMutation, useLazyQuery } from "@apollo/client"
 import client from '@/utils/apolloClient'
 
 const AI_ASSISTENT = gql`
-           mutation aiAssistent {
-               aiAssistent
+           mutation aiAssistent($request: String) {
+               aiAssistent(request: $request)
             }`
 
+const GET_AI_ASSISTENT_HISTORY = gql`
+            mutation getAiAssistentHistory($request: String!) {
+               getAiAssistentHistory(request: $request) {
+                  objectId
+                  request
+                  response{
+                     name
+                     content
+                  }
+               }
+            }
+            `
+
 const Chatbot = ({ setTitle, setSubtitle, setObjective, setTarget_group, setRecommendation, setKey_words,
-   setDescription, setShowAI, questionsHistory, setQuestionsHistory, resObjectsHistory, setresObjectsHistory }) => {
-   const [question, setQuestion] = useState("")
-   const [questionFoDisplay, setquestionFoDisplay] = useState("")
+   setDescription, showAI, setShowAI, questionsHistory, setQuestionsHistory, resObjectsHistory, setresObjectsHistory }) => {
+   const [question, setQuestion] = useState('')
+   const [search, setSearch] = useState('')
+   const [questionFoDisplay, setquestionFoDisplay] = useState('')
    const [resObjects, setResObjects] = useState([])
+   const [history, setHistory] = useState([])
+   // const [historyDetails, setHistoryDetails] = useState([])
    const [functions, setFunctions] = useState([setTitle, setSubtitle, setObjective, setTarget_group, setRecommendation, setKey_words, setDescription])
    const [response, setResponse] = useState(false)
    const [loading, setLoading] = useState(false)
    const [aiAssistent] = useMutation(AI_ASSISTENT, { client })
+   const [fetchHistory] = useMutation(GET_AI_ASSISTENT_HISTORY, { client })
+   // const [fetchHistory, { data, error }] = useLazyQuery(GET_AI_ASSISTENT_HISTORY, {
+   //    client,
+   //    variables: { request: search },
+   //    fetchPolicy: 'network-only',
+   // })
 
 
-   const handleSubmit = async (e) => {
-      e.preventDefault();
+   const handleSubmit = async () => {
       setLoading(true);
 
       try {
          const { data } = await aiAssistent({
-
+            variables: { request: question }
          })
 
          setResObjects(data.aiAssistent)
@@ -32,7 +53,7 @@ const Chatbot = ({ setTitle, setSubtitle, setObjective, setTarget_group, setReco
             ...prevQuestions, data.aiAssistent
          ])
          setQuestionsHistory((prevQuestions) => [
-            ...prevQuestions, question
+            ...prevQuestions, question.toLowerCase()
          ])
          setquestionFoDisplay(question)
          setQuestion('')
@@ -43,56 +64,115 @@ const Chatbot = ({ setTitle, setSubtitle, setObjective, setTarget_group, setReco
          setLoading(false)
       }
    }
-
+   const close = () => {
+      setShowAI(false);
+      setResponse(false);
+      setResObjects([]);
+      setQuestionsHistory([]);
+      setresObjectsHistory([]);
+      setquestionFoDisplay('');
+      setQuestion('');
+   }
    const saveAnswer = () => {
       functions.forEach((item, index) => {
          item(resObjects[index].content)
       })
    }
+   const fetchAiHistory = async () => {
+      try {
+         const { data } = await fetchHistory({
+            variables: { request: search }
+         })
+         setHistory(data?.getAiAssistentHistory)
+         // setHistoryDetails(data?.getAiAssistentHistory.response)
+         console.log(data?.getAiAssistentHistory)
+         data?.getAiAssistentHistory?.forEach(item => {
+            // setHistoryDetails(())
+            item?.response.forEach(result => {
+               console.log(result.name)
+            });
+         })
+      } catch (error) {
+         console.error("Error:", error)
+      }
+   }
 
    return (
-      <div className="chat-container">
-         <h2>AI Assistant</h2>
-         <div className="chat-container__chat">
-            {questionFoDisplay && <p>USER: {questionFoDisplay}</p>}
-            {response &&
-               <div>AI:
-                  <ul>
-                     {resObjects.map((item, index) =>
-                        <li key={index}>{item.name}: {item.content}</li>
+      <div className={showAI ? "chat chat--visible" : "chat"}>
+         <div className="chat__content content">
+            {/* <div className="chat__search search">
+               <input
+                  className="search__field"
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Find previous questions"
+               />
+               <button onClick={() => fetchAiHistory()}>Send</button> */}
+            {/* {response && */}
+            {/* <div className="search__result result-chat">
+                  <ul className="result__items items">
+                     {history?.map((item, index) =>
+                        <li className="result__item" key={index}>
+                           <button
+                              className="item__button"
+                              onClick={() => setQuestion(item.request)}
+                           >
+                              {item.request}
+                           </button>
+                           <ul className="item__details">
+                              {resObjects?.map((item, index) =>
+                                 <li key={index}>{item.name}: {item.content}</li>
+                              )}
+                           </ul>
+                        </li>
                      )}
                   </ul>
-               </div>}
-            {response &&
-               <button
-                  className="form__button"
-                  onClick={() => { saveAnswer(); setShowAI(false) }}
-               >Accept & Save
-               </button>
-            }
-         </div>
-
-         <form className="chat-container__form form" onSubmit={handleSubmit}>
-            <input
-               className="form__input"
-               type="text"
-               value={question}
-               onChange={(e) => setQuestion(e.target.value)}
-               placeholder="What is your course about?"
-               required
-            />
-            <div className="chat-container__actions actions-button">
-               <button className="form__button actions-button__item" type="submit" disabled={loading}>
-                  {loading ? "Thinking..." : "Send"}
-               </button>
-               <button
-                  onClick={() => setShowAI(false)}
-                  className="form__button actions-button__item actions-button__item--close"
-               >Close without saving
-               </button>
+               </div> */}
+            {/* } */}
+            {/* </div> */}
+            <h2>AI Assistant</h2>
+            <div className="chat__form form" >
+               <input
+                  className="form__input"
+                  type="text"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  placeholder={response ? "If you have any corrections, please tell me" : "What is your course about?"}
+               />
+               <div className="chat__actions actions-button">
+                  <button
+                     className="form__button actions-button__item"
+                     onClick={() => handleSubmit()}
+                     disabled={loading}>
+                     {loading ? "Thinking..." : "Send"}
+                  </button>
+                  <button
+                     onClick={() => close()}
+                     className="form__button actions-button__item actions-button__item--close"
+                  >Close without saving
+                  </button>
+               </div>
             </div>
-         </form>
-
+            <div className="form__chat">
+               {questionFoDisplay && <p>USER: {questionFoDisplay}</p>}
+               {response &&
+                  <div>AI:
+                     <ul>
+                        {resObjects.map((item, index) =>
+                           <li key={index}>{item.name}: {item.content}</li>
+                        )}
+                     </ul>
+                  </div>}
+               {response &&
+                  <button
+                     className="form__button"
+                     onClick={() => { saveAnswer(); setShowAI(false) }}
+                  >Accept & Save
+                  </button>
+               }
+            </div>
+         </div>
       </div >
    )
 }
