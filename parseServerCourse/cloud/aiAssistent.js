@@ -2,10 +2,10 @@ const OpenAI = require("openai")
 
 
 Parse.Cloud.define('getAiAssistentHistory', async (req) => {
-   const { request } = req.params
+   const { prompt } = req.params
    const query = new Parse.Query('AI_Assistent')
-   if (request) {
-      query.contains("request", request.toLowerCase())
+   if (prompt) {
+      query.contains("request", prompt.toLowerCase())
    }
    try {
       const aIAssistentList = await query.find()
@@ -19,12 +19,8 @@ Parse.Cloud.define('getAiAssistentHistory', async (req) => {
 
 })
 
-Parse.Cloud.define('aiAssistent', async (req) => {
-   const openai = new OpenAI({
-      // apiKey: process.env.OPENAI_API_KEY,
-   })
-   const { course_id, request, questionsHistory, resObjectsHistory } = req.params
-
+Parse.Cloud.define('addAiAssistentHistory', async (req) => {
+   const { course_id, questionsHistory, resObjectsHistory } = req.params
    const query = new Parse.Query('Course')
    const aiAssistent = new Parse.Object('AI_Assistent')
 
@@ -41,7 +37,16 @@ Parse.Cloud.define('aiAssistent', async (req) => {
       console.error(error);
       throw new Error(`Error saving assistent ${error.message}`)
    }
-   const preparedQuestion = `
+
+})
+
+Parse.Cloud.define('aiAssistent', async (req) => {
+   const openai = new OpenAI({
+      // apiKey: process.env.OPENAI_API_KEY,
+   })
+   const { prompt, inputId } = req.params
+
+   const preparedCourseQuestion = `
       I want to create a course.
       I need an answer in the following format:
       Do not change the name key
@@ -74,13 +79,29 @@ Parse.Cloud.define('aiAssistent', async (req) => {
          "content": "course description",
       }`
 
+   const preparedInputQuestion = `
+      I want to improve ${inputId}
+      I need an answer in the following format
+      
+      Do not change the name key
+      {
+         "name": must remain course ${inputId}",
+         "content": "course ${inputId}",
+      }`
+   let preparedQuestion = ''
+
+   if (inputId) {
+      preparedQuestion = preparedInputQuestion
+   } else {
+      preparedQuestion = preparedCourseQuestion
+   }
    const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
          { role: "system", content: "You are a helpful assistant." },
          {
             role: "user",
-            content: preparedQuestion + request,
+            content: preparedQuestion + prompt,
          },
       ],
       store: true,
@@ -120,28 +141,41 @@ Parse.Cloud.define('aiAssistent', async (req) => {
    //    refusal: null
    // }
 
-   console.log(completion.choices[0].message)
-   const jsonMatch = completion.choices[0].message.content.match(/```json\n([\s\S]+?)\n```/)
+   console.log(completion.choices[0].message.content)
+   const content = completion.choices[0].message.content
+   const jsonMatch = content.match(/```json\n([\s\S]+?)\n```/)
+   let jsonString
    // const jsonMatch = aiResponse.content.match(/```json\n([\s\S]+?)\n```/)
    if (jsonMatch) {
-      let jsonString = jsonMatch[1]
-
-      jsonString = jsonString.replace(/\n/g, "")
-      jsonString = jsonString.replace(/,\s*}/g, "}")
-
-      try {
-         const jsonData = JSON.parse(`[${jsonString}]`)
-         console.log(jsonData)
-         return jsonData
-      } catch (error) {
-         console.error("Error parsing JSON:", error);
-         throw new Error(`Error parsing JSON: ${error.message}`)
-
-      }
+      jsonString = jsonMatch[1]
    } else {
-      console.error("JSON content not found.");
-      throw new Error(`JSON content not found: ${error.message}`)
+      jsonString = content
    }
+   jsonString = jsonString.replace(/\n/g, "")
+   jsonString = jsonString.replace(/,\s*}/g, "}")
+
+   try {
+      const jsonData = JSON.parse(`[${jsonString}]`)
+      if (Array.isArray(jsonData)) {
+         return jsonData
+      } else {
+         return [
+            {
+               name: "",
+               content: `${jsonString}`
+            }
+         ]
+      }
+
+   } catch (error) {
+      console.error("Error parsing JSON:", error);
+      throw new Error(`Error parsing JSON: ${error.message}`)
+
+   }
+   // } else {
+   //    console.error("JSON content not found.");
+   //    throw new Error(`JSON content not found: ${error.message}`)
+   // }
 
 
 
@@ -149,31 +183,31 @@ Parse.Cloud.define('aiAssistent', async (req) => {
    // const responseJSON = [
    //    {
    //       name: "course title",
-   //       content: `Correct title for ${request}`,
+   //       content: `Correct title for ${prompt}`,
    //    },
    //    {
    //       name: "course subtitle",
-   //       content: `Correct subtitle for ${request}`,
+   //       content: `Correct subtitle for ${prompt}`,
    //    },
    //    {
    //       name: "course objective",
-   //       content: `Correct objective for ${request}`,
+   //       content: `Correct objective for ${prompt}`,
    //    },
    //    {
    //       name: "course target_group",
-   //       content: `Correct target_group for ${request}`,
+   //       content: `Correct target_group for ${prompt}`,
    //    },
    //    {
    //       name: "course recommendation",
-   //       content: `Correct recommendation for ${request}`,
+   //       content: `Correct recommendation for ${prompt}`,
    //    },
    //    {
    //       name: "course key_words",
-   //       content: `Correct key_words for ${request}`,
+   //       content: `Correct key_words for ${prompt}`,
    //    },
    //    {
    //       name: "course description",
-   //       content: `Correct description for ${request}`,
+   //       content: `Correct description for ${prompt}`,
    //    },
    // ]
 

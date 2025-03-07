@@ -3,8 +3,8 @@ import { gql, useMutation, useLazyQuery } from "@apollo/client"
 import client from '@/utils/apolloClient'
 
 const AI_ASSISTENT = gql`
-           mutation aiAssistent($request: String) {
-               aiAssistent(request: $request)
+           mutation aiAssistent($prompt: String, $inputId: String) {
+               aiAssistent(prompt: $prompt, inputId: $inputId)
             }`
 
 const GET_AI_ASSISTENT_HISTORY = gql`
@@ -21,7 +21,7 @@ const GET_AI_ASSISTENT_HISTORY = gql`
             `
 
 const Chatbot = ({ setTitle, setSubtitle, setObjective, setTarget_group, setRecommendation, setKey_words,
-   setDescription, showAI, setShowAI, questionsHistory, setQuestionsHistory, resObjectsHistory, setresObjectsHistory }) => {
+   setDescription, showAI, setShowAI, questionsHistory, setQuestionsHistory, resObjectsHistory, setresObjectsHistory, inputId }) => {
    const [question, setQuestion] = useState('')
    const [search, setSearch] = useState('')
    const [questionFoDisplay, setquestionFoDisplay] = useState('')
@@ -45,7 +45,10 @@ const Chatbot = ({ setTitle, setSubtitle, setObjective, setTarget_group, setReco
 
       try {
          const { data } = await aiAssistent({
-            variables: { request: question }
+            variables: {
+               prompt: question,
+               inputId: inputId
+            }
          })
 
          setResObjects(data.aiAssistent)
@@ -74,9 +77,37 @@ const Chatbot = ({ setTitle, setSubtitle, setObjective, setTarget_group, setReco
       setQuestion('');
    }
    const saveAnswer = () => {
-      functions.forEach((item, index) => {
-         item(resObjects[index].content)
+      // functions.forEach((item, index) => {
+      //    item(resObjects[index].content)
+      // })
+      resObjects.forEach((item) => {
+         switch (item.name) {
+            case "course title":
+               setTitle(item.content);
+               break;
+            case "course subtitle":
+               setSubtitle(item.content);
+               break;
+            case "course objective":
+               setObjective(item.content);
+               break;
+            case "course target_group":
+               setTarget_group(item.content);
+               break;
+            case "course recommendation":
+               setRecommendation(item.content);
+               break;
+            case "course key_words":
+               setKey_words(item.content);
+               break;
+            case "course description":
+               setDescription(item.content);
+               break;
+            default:
+               console.log("Unknown item:", item);
+         }
       })
+
    }
    const fetchAiHistory = async () => {
       try {
@@ -138,7 +169,13 @@ const Chatbot = ({ setTitle, setSubtitle, setObjective, setTarget_group, setReco
                   type="text"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
-                  placeholder={response ? "If you have any corrections, please tell me" : "What is your course about?"}
+                  placeholder={
+                     inputId
+                        ? `Would you like to improve your ${inputId}`
+                        : response
+                           ? "If you have any corrections, please tell me"
+                           : "What is your course about?"
+                  }
                />
                <div className="chat__actions actions-button">
                   <button
@@ -167,7 +204,7 @@ const Chatbot = ({ setTitle, setSubtitle, setObjective, setTarget_group, setReco
                {response &&
                   <button
                      className="form__button"
-                     onClick={() => { saveAnswer(); setShowAI(false) }}
+                     onClick={() => { saveAnswer(); setShowAI(false); setResObjects([]); setquestionFoDisplay('') }}
                   >Accept & Save
                   </button>
                }
