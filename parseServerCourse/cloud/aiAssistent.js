@@ -84,6 +84,7 @@ Parse.Cloud.define('aiAssistent', async (req) => {
       I want to improve ${inputId} ${prompt}
       preliminary data ${questionsHistory} ${resObjectsHistory}
       I need an answer in the following format
+      Preliminary data remains unchanged
       Change only ${inputId}
       Do not change the name key
       {
@@ -134,9 +135,48 @@ Parse.Cloud.define('aiAssistent', async (req) => {
       ],
       store: true,
    })
+   const aiResponse = {
+      role: 'assistant',
+      content: 'Here is the updated structure with the changed subtitle:\n' +
+         '\n' +
+         '```json\n' +
+         '[\n' +
+         '    {\n' +
+         '        "name": "course title",\n' +
+         '        "content": "JavaScript and AI Integration"\n' +
+         '    },\n' +
+         '    {\n' +
+         '        "name": "course subtitle",\n' +
+         '        "content": "Leveraging AI to Enhance JavaScript Applications"\n' +
+         '    },\n' +
+         '    {\n' +
+         '        "name": "course objective",\n' +
+         '        "content": "To equip students with the skills to integrate artificial intelligence APIs and libraries into JavaScript applications, enhancing functionality and user interaction."\n' +
+         '    },\n' +
+         '    {\n' +
+         '        "name": "course target_group",\n' +
+         '        "content": "Web developers, software engineers, and AI enthusiasts looking to expand their JavaScript skills with AI integration."\n' +
+         '    },\n' +
+         '    {\n' +
+         '        "name": "course recommendation",\n' +
+         '        "content": "Participants should have a basic understanding of JavaScript and web development concepts. Familiarity with APIs is beneficial."\n' +
+         '    },\n' +
+         '    {\n' +
+         '        "name": "course key_words",\n' +
+         '        "content": "JavaScript, AI, machine learning, integration, web development, APIs, TensorFlow.js, OpenAI, neural networks"\n' +
+         '    },\n' +
+         '    {\n' +
+         '        "name": "course description",\n' +
+         `        "content": "This course provides a comprehensive guide to integrating artificial intelligence into JavaScript applications. Students will learn to work with popular AI frameworks and libraries such as TensorFlow.js and OpenAI's APIs. The curriculum covers essential concepts of AI, practical coding examples, and project-based learning to create intelligent web applications. By the end of the course, students will be able to build applications that leverage machine learning for functionalities like image recognition, natural language processing, and recommendation systems."\n` +
+         '    }\n' +
+         ']\n' +
+         '```',
+      refusal: null
+   }
 
    console.log(completion.choices[0].message)
    const content = completion.choices[0].message.content
+   // const content = aiResponse.content
    const jsonMatch = content.match(/```json\n([\s\S]+?)\n```/)
    let jsonString
    if (jsonMatch) {
@@ -144,7 +184,8 @@ Parse.Cloud.define('aiAssistent', async (req) => {
    } else {
       jsonString = content
    }
-   jsonString = jsonString.replace(/\[\n/g, "");
+   jsonString = jsonString.replace(/\n/g, "")
+   jsonString = jsonString.replace(/\[/g, "").replace(/\]/g, "");
    jsonString = jsonString.replace(/,\s*}/g, "}")
 
    try {
