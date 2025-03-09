@@ -44,10 +44,11 @@ Parse.Cloud.define('aiAssistent', async (req) => {
    const openai = new OpenAI({
       // apiKey: process.env.OPENAI_API_KEY,
    })
-   const { prompt, inputId } = req.params
+   const { prompt, inputId, questionsHistory, resObjectsHistory } = req.params
 
    const preparedCourseQuestion = `
-      I want to create a course.
+      ${questionsHistory ? `${prompt} preliminary data` : `${prompt} I want to create a course.`}
+       ${questionsHistory} ${resObjectsHistory}
       I need an answer in the following format:
       Do not change the name key
       {
@@ -80,14 +81,40 @@ Parse.Cloud.define('aiAssistent', async (req) => {
       }`
 
    const preparedInputQuestion = `
-      I want to improve ${inputId}
+      I want to improve ${inputId} ${prompt}
+      preliminary data ${questionsHistory} ${resObjectsHistory}
       I need an answer in the following format
-      
+      Change only ${inputId}
       Do not change the name key
       {
-         "name": must remain course ${inputId}",
-         "content": "course ${inputId}",
+         "name": must remain "course title",
+         content: "course title",
+      },
+      {
+         "name": must remain  "course subtitle",
+         "content": "course subtitle",
+      },
+      {
+         "name": must remain  "course objective",
+         "content": "course objective",
+      },
+      {
+         "name":  must remain "course target_group",
+         "content": "course target_group",
+      },
+      {
+         "name": must remain  "course recommendation",
+         "content": "course recommendation",
+      },
+      {
+         "name": must remain  "course key_words",
+         "content": "course key_words",
+      },
+      {
+         "name": must remain  "course description",
+         "content": "course description",
       }`
+
    let preparedQuestion = ''
 
    if (inputId) {
@@ -95,6 +122,7 @@ Parse.Cloud.define('aiAssistent', async (req) => {
    } else {
       preparedQuestion = preparedCourseQuestion
    }
+
    const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -106,79 +134,34 @@ Parse.Cloud.define('aiAssistent', async (req) => {
       ],
       store: true,
    })
-   // const aiResponse = {
-   //    role: 'assistant',
-   //    content: '```json\n' +
-   //       '{\n' +
-   //       '   "name": "course title",\n' +
-   //       '   "content": "JavaScript Fundamentals"\n' +
-   //       '},\n' +
-   //       '{\n' +
-   //       '   "name": "course subtitle",\n' +
-   //       '   "content": "Master the Basics of JavaScript Programming"\n' +
-   //       '},\n' +
-   //       '{\n' +
-   //       '   "name": "course objective",\n' +
-   //       '   "content": "To equip learners with foundational knowledge in JavaScript, enabling them to understand and write basic code."\n' +
-   //       '},\n' +
-   //       '{\n' +
-   //       '   "name": "course target_group",\n' +
-   //       '   "content": "Beginners interested in web development and programming."\n' +
-   //       '},\n' +
-   //       '{\n' +
-   //       '   "name": "course recommendation",\n' +
-   //       '   "content": "No prior programming experience is required, but familiarity with HTML and CSS will be helpful."\n' +
-   //       '},\n' +
-   //       '{\n' +
-   //       '   "name": "course key_words",\n' +
-   //       '   "content": "JavaScript, programming, web development, coding, beginner"\n' +
-   //       '},\n' +
-   //       '{\n' +
-   //       '   "name": "course description",\n' +
-   //       '   "content": "This course provides an introduction to JavaScript, covering core concepts, syntax, and best practices. Students will engage in hands-on coding exercises to reinforce their understanding and build interactive web applications."\n' +
-   //       '}\n' +
-   //       '```',
-   //    refusal: null
-   // }
 
-   console.log(completion.choices[0].message.content)
+   console.log(completion.choices[0].message)
    const content = completion.choices[0].message.content
    const jsonMatch = content.match(/```json\n([\s\S]+?)\n```/)
    let jsonString
-   // const jsonMatch = aiResponse.content.match(/```json\n([\s\S]+?)\n```/)
    if (jsonMatch) {
       jsonString = jsonMatch[1]
    } else {
       jsonString = content
    }
-   jsonString = jsonString.replace(/\n/g, "")
+   jsonString = jsonString.replace(/\[\n/g, "");
    jsonString = jsonString.replace(/,\s*}/g, "}")
 
    try {
       const jsonData = JSON.parse(`[${jsonString}]`)
-      if (Array.isArray(jsonData)) {
-         return jsonData
-      } else {
-         return [
-            {
-               name: "",
-               content: `${jsonString}`
-            }
-         ]
-      }
+      console.log(jsonData)
+      return jsonData
+
 
    } catch (error) {
       console.error("Error parsing JSON:", error);
-      throw new Error(`Error parsing JSON: ${error.message}`)
-
+      return [
+         {
+            name: "AI",
+            content: content
+         }
+      ]
    }
-   // } else {
-   //    console.error("JSON content not found.");
-   //    throw new Error(`JSON content not found: ${error.message}`)
-   // }
-
-
-
 
    // const responseJSON = [
    //    {

@@ -117,7 +117,7 @@ type Mutation {
 
   delAnswer(id: ID!): Answer @resolve
 
-  aiAssistent(prompt: String, inputId: String): Object @resolve
+  aiAssistent(prompt: String, inputId: String, questionsHistory: String, resObjectsHistory: String): Object @resolve
   addAiAssistentHistory(course_id: ID, questionsHistory: String, resObjectsHistory: [Object]): Object @resolve
   getAiAssistentHistory(prompt: String!): [Assistent] @resolve
 

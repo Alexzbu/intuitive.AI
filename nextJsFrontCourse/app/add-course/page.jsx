@@ -51,6 +51,7 @@ const AddCourse = () => {
    const [response, setResponse] = useState(false)
    const [questionsHistory, setQuestionsHistory] = useState([])
    const [resObjectsHistory, setresObjectsHistory] = useState([])
+   const [loading, setLoading] = useState(false)
    const [addCourse] = useMutation(ADD_COURSE_MUTATION, { client })
    const [addAiAssistentHistory] = useMutation(ADD_AI_ASSISTENT_HISTORY, { client })
    const [fetchHistory] = useMutation(GET_AI_ASSISTENT_HISTORY, { client })
@@ -63,6 +64,7 @@ const AddCourse = () => {
    }, [search])
 
    const sendForm = async () => {
+      setLoading(true)
       try {
          const { data } = await addCourse({
             variables: {
@@ -92,6 +94,8 @@ const AddCourse = () => {
       } catch (error) {
          setErrors(error.response.data)
          console.error('Error adding course:', error)
+      } finally {
+         setLoading(false)
       }
    }
 
@@ -289,8 +293,11 @@ const AddCourse = () => {
             </div>
             {errors.description && <span className="error">{errors.description}</span>}
 
-            <button className="form__button" onClick={sendForm}>
-               Add
+            <button
+               className="form__button"
+               onClick={sendForm}
+               disabled={loading}>
+               {loading ? "Saving..." : "Add"}
             </button>
          </div>
       </div>

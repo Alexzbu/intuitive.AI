@@ -3,8 +3,8 @@ import { gql, useMutation, useLazyQuery } from "@apollo/client"
 import client from '@/utils/apolloClient'
 
 const AI_ASSISTENT = gql`
-           mutation aiAssistent($prompt: String, $inputId: String) {
-               aiAssistent(prompt: $prompt, inputId: $inputId)
+           mutation aiAssistent($prompt: String, $inputId: String, $questionsHistory: String, $resObjectsHistory: String) {
+               aiAssistent(prompt: $prompt, inputId: $inputId, questionsHistory: $questionsHistory, resObjectsHistory: $resObjectsHistory)
             }`
 
 const GET_AI_ASSISTENT_HISTORY = gql`
@@ -47,7 +47,9 @@ const Chatbot = ({ setTitle, setSubtitle, setObjective, setTarget_group, setReco
          const { data } = await aiAssistent({
             variables: {
                prompt: question,
-               inputId: inputId
+               inputId: inputId,
+               questionsHistory: questionsHistory[0] || '',
+               resObjectsHistory: JSON.stringify(resObjectsHistory[resObjectsHistory.length - 1]) || ''
             }
          })
 
