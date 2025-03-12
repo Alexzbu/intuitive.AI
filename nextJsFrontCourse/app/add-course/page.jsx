@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation"
 import Chatbot from '@/components/openAI'
 
 const ADD_COURSE_MUTATION = gql`
-            mutation AddCourse($name: String!, $subtitle: String, $objective: String, $target_group: String, $recommendation: String, $key_words: [String], $description: String!) {
-               addCourse(name: $name, subtitle: $subtitle, objective: $objective, target_group: $target_group, recommendation: $recommendation, key_words: $key_words, description: $description) {
+            mutation AddCourse($course: Object) {
+               addCourse(course: $course) {
                objectId
                name
                }
@@ -40,7 +40,7 @@ const AddCourse = () => {
    const [objective, setObjective] = useState('')
    const [target_group, setTarget_group] = useState('')
    const [recommendation, setRecommendation] = useState('')
-   const [key_words, setKey_words] = useState('')
+   const [key_words, setKey_words] = useState([])
    const [description, setDescription] = useState('')
    const [functions, setFunctions] = useState([setTitle, setSubtitle, setObjective, setTarget_group, setRecommendation, setKey_words, setDescription])
    const [errors, setErrors] = useState({})
@@ -68,13 +68,15 @@ const AddCourse = () => {
       try {
          const { data } = await addCourse({
             variables: {
-               name: title,
-               subtitle: subtitle,
-               objective: objective,
-               target_group: target_group,
-               recommendation: recommendation,
-               key_words: key_words,
-               description: description,
+               course: {
+                  name: title,
+                  subtitle: subtitle,
+                  objective: objective,
+                  target_group: target_group,
+                  recommendation: recommendation,
+                  key_words: key_words,
+                  description: description,
+               }
             },
          })
 
@@ -266,7 +268,7 @@ const AddCourse = () => {
                   id="key_words"
                   name="key_words"
                   value={key_words}
-                  onChange={(e) => setRecommendation(e.target.value)}
+                  onChange={(e) => setKey_words([e.target.value])}
                />
                <button
                   className="form__button actions-button__item actions-button__item--ai"

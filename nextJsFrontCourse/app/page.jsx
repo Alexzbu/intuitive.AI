@@ -8,13 +8,16 @@ import client from '@/utils/apolloClient'
 import Loading from '@/components/Loading'
 
 const GET_COURSES_QUERY = gql`
-            query getCourses {
-                    getCourses {
-                      objectId
-                      name
-                      description
-                      sections{
-                        count
+            query getCourses($limit: Int, $page: Int) {
+                    getCourses(limit: $limit, page: $page) {
+                      totalCourses
+                      courses{
+                        objectId
+                        name
+                        description
+                        sections{
+                          count
+                        }
                       }
                     }
               }`
@@ -29,21 +32,28 @@ const DEL_COURSE_MUTATION = gql`
 
 export default function Home() {
   const router = useRouter()
+  const limit = 6
   const [page, setPage] = useState(0)
   const [filter, setFilter] = useState('')
   const [sort, setSort] = useState('')
   const [totalPages, setTotalPages] = useState(0)
   const [del, setDel] = useState(false)
-  const { data, loading, error, refetch } = useQuery(GET_COURSES_QUERY, { client, })
+  const { data, loading, error, refetch } = useQuery(GET_COURSES_QUERY, {
+    client,
+    variables: {
+      limit: limit,
+      page: page
+    }
+  })
   const [delCourse, { loading: delLoading }] = useMutation(DEL_COURSE_MUTATION, { client })
 
   useEffect(() => {
     setDel(false)
-    // setTotalPages(Math.ceil(response.data.count / limit) > 1 ? Math.ceil(response.data.count / limit) : 0)
+    setTotalPages(Math.ceil(data?.getCourses?.totalCourses / limit) > 1 ? Math.ceil(data?.getCourses?.totalCourses / limit) : 0)
 
     refetch()
-  }, [page, sort, filter, del])
-
+  }, [data, page, sort, filter, del])
+  console.log(totalPages)
   const deleteItem = async (id) => {
 
     try {
@@ -82,8 +92,8 @@ export default function Home() {
         {loading &&
           <Loading />
         }
-        {data?.getCourses.length === 0 && !loading && (<h2>NO COURSES FOUND</h2>)}
-        {data?.getCourses?.map((course) => (
+        {data?.getCourses.courses.length === 0 && !loading && (<h2>NO COURSES FOUND</h2>)}
+        {data?.getCourses?.courses.map((course) => (
           <div className="course-card" key={course.objectId}>
             <Link className="nav__link" href={`/course-details?id=${course.objectId}`}>
               {/* <Link to={`/course-detail/${course.objectId}`}></Link> */}

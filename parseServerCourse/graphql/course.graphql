@@ -1,6 +1,6 @@
 type Query {
   getCourse(id: ID!): Course @resolve
-  getCourses(name: String): [Course] @resolve
+  getCourses(name: String, limit: Int, page: Int): CourseResponse @resolve
   getSections(name: String): [Section] @resolve
   getSection(id: ID!): Section @resolve
   getQuestions(name: String): [Question] @resolve
@@ -9,6 +9,12 @@ type Query {
   getQuiz_Question(id: ID!): Quiz_Question @resolve
   getAnswers: [Answer] @resolve
 }
+
+type CourseResponse {
+  totalCourses: Int
+  courses: [Course]
+}
+
 type responseNodeType {
   name: String
   content: String
@@ -19,26 +25,7 @@ type Assistent {
   response: [responseNodeType]
 }
 type Mutation {
-  addCourse(
-    name: String!,
-    subtitle: String,
-    objective: String,
-    target_group: String,
-    entry_requirements: [String],
-    self_assessment: [String],
-    target_profile: [String],
-    participants_number: String,
-    recommendation: String,
-    trainer_skills: [String],
-    qualifications: [String],
-    description: String,
-    categories: [String],
-    technology: [String],
-    language: [String],
-    key_words: [String],
-    isFree: Boolean,
-    price: String,
-    ): Course @resolve
+  addCourse(course: Object): Course @resolve
     
   upCourse(
     id: ID!,
@@ -61,6 +48,7 @@ type Mutation {
     isFree: Boolean,
     price: String,
     ): Course @resolve
+    
   delCourse(id: ID!): Course @resolve
 
   addSection(course_id: ID!, name: String!): Section @resolve
