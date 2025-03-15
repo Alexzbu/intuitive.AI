@@ -5,6 +5,7 @@ import { gql, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
 import { useRouter } from "next/navigation"
 import Chatbot from '@/components/openAI'
+import { toast } from 'react-hot-toast'
 
 const ADD_COURSE_MUTATION = gql`
             mutation AddCourse($course: Object) {
@@ -65,6 +66,16 @@ const AddCourse = () => {
 
    const sendForm = async () => {
       setLoading(true)
+      const toastId = toast.loading("Saving...", {
+         position: "bottom-center",
+         style: {
+            background: "green",
+            color: "white",
+            width: "100%",
+            maxWidth: "900px"
+         }
+      })
+
       try {
          const { data } = await addCourse({
             variables: {
@@ -90,10 +101,22 @@ const AddCourse = () => {
             })
          }
 
+         toast.success("Saved successfully!", {
+            id: toastId,
+            duration: 3000,
+            position: "bottom-center",
+            style: {
+               background: "green",
+               color: "white",
+               width: "100%",
+               maxWidth: "900px"
+            }
+         })
          if (data.addCourse.objectId) {
             router.push(`/add-section?id=${data.addCourse.objectId}`)
          }
       } catch (error) {
+         toast.error("Failed to save!", { id: toastId })
          setErrors(error.response.data)
          console.error('Error adding course:', error)
       } finally {

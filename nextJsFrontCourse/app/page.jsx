@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { gql, useQuery, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
 import Loading from '@/components/Loading'
+import { toast } from 'react-hot-toast'
 
 const GET_COURSES_QUERY = gql`
             query getCourses($limit: Int, $page: Int) {
@@ -55,13 +56,14 @@ export default function Home() {
   }, [data, page, sort, filter, del])
   console.log(totalPages)
   const deleteItem = async (id) => {
-
+    const toastId = toast.loading("Removing...")
     try {
       const { data } = await delCourse({
         variables: {
           id: id
         },
       })
+      toast.success("Removed successfully!", { id: toastId })
       setDel(true)
     } catch (error) {
       console.error('Error deleting data:', error)
