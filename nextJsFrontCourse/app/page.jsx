@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { gql, useQuery, useMutation } from "@apollo/client"
@@ -35,11 +35,13 @@ export default function Home() {
   const router = useRouter()
   const limit = 6
   const [page, setPage] = useState(0)
-  const [filter, setFilter] = useState('')
-  const [sort, setSort] = useState('')
-  const [totalPages, setTotalPages] = useState(0)
+  const [allCourses, setAllCourses] = useState([])
+  const [hasMore, setHasMore] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [del, setDel] = useState(false)
-  const { data, loading, error, refetch } = useQuery(GET_COURSES_QUERY, {
+  const observerTarget = useRef(null)
+
+  const { data, loading, error, refetch, fetchMore } = useQuery(GET_COURSES_QUERY, {
     client,
     variables: {
       limit: limit,
@@ -49,12 +51,50 @@ export default function Home() {
   const [delCourse, { loading: delLoading }] = useMutation(DEL_COURSE_MUTATION, { client })
 
   useEffect(() => {
-    setDel(false)
-    setTotalPages(Math.ceil(data?.getCourses?.totalCourses / limit) > 1 ? Math.ceil(data?.getCourses?.totalCourses / limit) : 0)
+    if (data?.getCourses?.courses) {
+      if (page === 0) {
+        setAllCourses(data.getCourses.courses)
+      } else {
+        setAllCourses(prev => [...prev, ...data.getCourses.courses])
+      }
+      setLoadingMore(false)
 
-    refetch()
-  }, [data, page, sort, filter, del])
-  console.log(totalPages)
+      // Check if there are more courses to load
+      const totalPages = Math.ceil(data.getCourses.totalCourses / limit)
+      setHasMore(page < totalPages - 1)
+    }
+  }, [data, page])
+
+  useEffect(() => {
+    if (del) {
+      setDel(false)
+      setPage(0)
+      refetch()
+    }
+  }, [del, refetch])
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting && hasMore && !loading && !loadingMore) {
+          setLoadingMore(true)
+          setPage(prev => prev + 1)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current)
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current)
+      }
+    }
+  }, [hasMore, loading, loadingMore])
+
   const deleteItem = async (id) => {
     const toastId = toast.loading("Removing...")
     try {
@@ -69,67 +109,62 @@ export default function Home() {
       console.error('Error deleting data:', error)
     }
   }
+
   return (
-    <div className="container">
-      <h1 className="title">List of available courses</h1>
-      <div className='filter-block'>
-        <div className="form">
-          <input
-            className="form__input"
-            type="text"
-            placeholder="Search by name"
-            value={filter}
-            onChange={(e) => { setFilter(e.target.value); setPage(0) }}
-          />
-          <div className="form__select-wrapper">
-            <select className="form__select" onChange={(e) => { setSort(e.target.value); setPage(0) }}>
-              <option value="">Sort by price:</option>
-              <option value="price:asc">Price: Low to high</option>
-              <option value="price:desc">Price: High to low</option>
-            </select>
-          </div>
+    <>
+      <section className="hero">
+        <div className="hero__content">
+          <h1 className="hero__title">AGI INSTITUTE</h1>
+          <h2 className="hero__subtitle">Bildung trifft KI</h2>
+          <p className="hero__description">Wir verbinden individuelle Weiterbildung, innovative Lernprogramme und unsere Plattform AGI² – für effektives Lernen mit KI.</p>
         </div>
-      </div>
-      <div className="course-list">
-        {loading &&
-          <Loading />
-        }
-        {data?.getCourses.courses.length === 0 && !loading && (<h2>NO COURSES FOUND</h2>)}
-        {data?.getCourses?.courses.map((course) => (
-          <div className="course-card" key={course.objectId}>
-            <Link className="nav__link" href={`/course-details?id=${course.objectId}`}>
-              {/* <Link to={`/course-detail/${course.objectId}`}></Link> */}
-              <h2 className="course-card__title">{course.name}</h2>
-              <p className="course-card__number">Description: {course.description}</p>
-              <p className="course-card__number">Price (hour):$</p>
-              <p className="course-card__number">Number of sections: {course.sections.count}</p>
-            </Link>
-            {/* {isAuthenticated && ( */}
-            <div className="course-card__actions">
-              <button className="course-card__link delete-button"
-                onClick={() => deleteItem(course.objectId)}
-                disabled={delLoading}>Remove
-              </button>
-              <button className="course-card__link"
-                onClick={() => router.push(`/update-course?id=${course.objectId}`)}
-              >Edit
-              </button>
-            </div>
-            {/* )} */}
+      </section>
+
+      <section className="courses-section">
+        <div className="container">
+          <h2 className="section-title">Discover Our Courses</h2>
+
+          {loading && page === 0 && <Loading />}
+
+          <div className="course-list">
+            {allCourses.map((course) => (
+              <div className="course-card" key={course.objectId}>
+                <Link className="course-card__link" href={`/course-details?id=${course.objectId}`}>
+                  <h3 className="course-card__title">{course.name}</h3>
+                  <p className="course-card__description">{course.description}</p>
+                  <p className="course-card__meta">Sections: {course.sections.count}</p>
+                </Link>
+                <div className="course-card__actions">
+                  <button
+                    className="course-card__btn course-card__btn--delete"
+                    onClick={() => deleteItem(course.objectId)}
+                    disabled={delLoading}>
+                    Delete
+                  </button>
+                  <button
+                    className="course-card__btn course-card__btn--edit"
+                    onClick={() => router.push(`/update-course?id=${course.objectId}`)}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className='pagination-block'>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button className={page === index ? 'course-card__link active-button' : 'course-card__link'}
-            key={index}
-            onClick={() => setPage(index)}
-            disabled={page === index}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
-    </div>
+
+          {allCourses.length === 0 && !loading && (
+            <div className="no-courses">
+              <p>No courses available</p>
+            </div>
+          )}
+
+          {hasMore && (
+            <div ref={observerTarget} className="infinite-scroll-trigger">
+              {loadingMore && <Loading />}
+            </div>
+          )}
+        </div>
+      </section>
+    </>
   )
 }
