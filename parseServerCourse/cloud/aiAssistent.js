@@ -1,4 +1,4 @@
-const OpenAI = require("openai")
+import OpenAI from "openai"
 
 
 Parse.Cloud.define('getAiAssistentHistory', async (req) => {

@@ -1,4 +1,4 @@
-const deleteSectionById = require("./deleteSection")
+import deleteSectionById from "./deleteSection.js"
 
 Parse.Cloud.define('getCourse', async (req) => {
    const { id } = req.params

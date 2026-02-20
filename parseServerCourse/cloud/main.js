@@ -1,6 +1,6 @@
-require('./course')
-require('./section')
-require('./question')
-require('./quiz_question')
-require('./answer')
-require('./aiAssistent')
+import './course.js'
+import './section.js'
+import './question.js'
+import './quiz_question.js'
+import './answer.js'
+import './aiAssistent.js'

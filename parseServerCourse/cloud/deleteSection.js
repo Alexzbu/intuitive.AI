@@ -1,4 +1,4 @@
-module.exports = async function deleteSectionById(id) {
+export default async function deleteSectionById(id) {
    if (!id) {
       throw new Error("Section ID is required.")
    }
