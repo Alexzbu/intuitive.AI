@@ -257,6 +257,41 @@ html {
   background-color: #1a4d7a;
 }
 
+/* Auth Button Styles (no nav__link pseudo-element) */
+.btn-auth {
+  color: #1a4d7a;
+  border: 2px solid #1a4d7a;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-auth:hover {
+  background-color: #1a4d7a;
+  color: #fff;
+}
+
+.btn-primary {
+  background-color: #2b7ab7;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #fff;
+  color: #1a4d7a;
+}
+
 /* COURSES SECTION */
 .courses-section {
   padding: 80px 0;

@@ -1,6 +1,10 @@
+'use client'
+
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 const Navbar = () => {
+   const router = useRouter()
 
    return (
       <header className="header">
@@ -16,8 +20,8 @@ const Navbar = () => {
          </nav>
          <div className="auth">
             <span className="nav__language">DE</span>
-            <Link href="/login" className="nav__link nav__link--auth">Login</Link>
-            <Link href="/register" className="nav__link nav__link--primary">Sign Up</Link>
+            <button className="btn-auth" onClick={() => router.push('/login')}>Login</button>
+            <button className="btn-primary" onClick={() => router.push('/register')}>Sign Up</button>
          </div>
       </header>
 
