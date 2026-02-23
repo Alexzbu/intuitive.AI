@@ -136,7 +136,7 @@ export function RegisterForm({ register, handleSubmit, errors, isSubmitting, onS
             <option value="">Please select</option>
             <option value="student">Student</option>
             <option value="employee">Employee</option>
-            <option value="manager">Trainer</option>
+            <option value="trainer">Trainer</option>
             <option value="director">Director</option>
             <option value="other">Other</option>
           </select>

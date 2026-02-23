@@ -1,0 +1,16 @@
+type AuthPayload {
+  objectId: ID
+  sessionToken: String
+}
+
+extend type Mutation {
+  register(
+    salutation:   String!
+    firstName:    String!
+    lastName:     String!
+    organization: String!
+    email:        String!
+    password:     String!
+    position:     String!
+  ): AuthPayload @resolve
+}

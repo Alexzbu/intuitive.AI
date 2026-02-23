@@ -1,0 +1,18 @@
+{
+  "className": "_User",
+  "fields": {
+    "salutation":   { "type": "String" },
+    "firstName":    { "type": "String" },
+    "lastName":     { "type": "String" },
+    "organization": { "type": "String" },
+    "position":     { "type": "String" }
+  },
+  "classLevelPermissions": {
+    "find":   {},
+    "count":  {},
+    "get":    {},
+    "create": { "*": true },
+    "update": {},
+    "delete": {}
+  }
+}

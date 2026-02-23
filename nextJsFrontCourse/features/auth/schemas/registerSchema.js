@@ -18,7 +18,7 @@ export const registerSchema = z.object({
     .min(1, "Email is required.")
     .email({ message: "Enter a valid email address." }),
   password: z.string().min(1, "Password is required.").min(8, "At least 8 characters."),
-  position: z.enum(["student", "employee", "manager", "director", "other"], {
+  position: z.enum(["student", "employee", "trainer", "director", "other"], {
     errorMap: () => ({ message: "Please select a position." }),
   }),
   agreePrivacy: z.literal(true, {

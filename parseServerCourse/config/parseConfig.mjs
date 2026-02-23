@@ -8,6 +8,7 @@ import Question from '../schemas/Question.json' with { type: 'json' }
 import QuizQuestion from '../schemas/Quiz-Question.json' with { type: 'json' }
 import Answer from '../schemas/Answer.json' with { type: 'json' }
 import AI_Assistent from '../schemas/AIAssistent.json' with { type: 'json' }
+import User from '../schemas/_User.json' with { type: 'json' }
 
 dotenv.config()
 
@@ -24,7 +25,7 @@ export default {
       enableForPublic: true,
    },
    schema: {
-      definitions: [Course, Section, Question, QuizQuestion, Answer, AI_Assistent],
+      definitions: [Course, Section, Question, QuizQuestion, Answer, AI_Assistent, User],
       lockSchemas: true,
       strict: true,
       recreateModifiedFields: true,

@@ -4,7 +4,8 @@ import gql from 'graphql-tag'
 import fs from 'fs'
 import parseConfig from './config/parseConfig.mjs'
 
-const courseSchema = fs.readFileSync('./graphql/course.graphql')
+const courseSchema = fs.readFileSync('./graphql/course.graphql', 'utf8')
+const authSchema   = fs.readFileSync('./graphql/auth.graphql',   'utf8')
 const app = express()
 
 const parseServer = new ParseServer(parseConfig)
@@ -16,7 +17,7 @@ const parseGraphQLServer = new ParseGraphQLServer(
     {
         graphQLPath: '/graphql',
         playgroundPath: '/playground',
-        graphQLCustomTypeDefs: gql`${courseSchema}`
+        graphQLCustomTypeDefs: gql`${courseSchema}\n${authSchema}`
     }
 )
 app.use('/parse', parseServer.app)
