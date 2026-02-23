@@ -32,3 +32,19 @@ Parse.Cloud.define('register', async (req) => {
     throw new Parse.Error(error.code || Parse.Error.SCRIPT_FAILED, error.message)
   }
 })
+
+Parse.Cloud.define('login', async (req) => {
+  const { email, password } = req.params
+
+  try {
+    const user = await Parse.User.logIn(email, password)
+    return {
+      objectId: user.id,
+      sessionToken: user.getSessionToken(),
+      position: user.get('position'),
+      firstName: user.get('firstName'),
+    }
+  } catch (error) {
+    throw new Parse.Error(Parse.Error.OBJECT_NOT_FOUND, 'Invalid email or password.')
+  }
+})
