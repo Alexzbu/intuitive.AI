@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export function RegisterForm({ register, handleSubmit, errors, isSubmitting, onSubmit }) {
+export function RegisterForm({ register, handleSubmit, errors, isSubmitting, onSubmit, showPassword, togglePassword }) {
   const inputClass = (name) =>
     `auth-page__input${errors[name] ? " auth-page__input--error" : ""}`;
 
@@ -93,6 +93,32 @@ export function RegisterForm({ register, handleSubmit, errors, isSubmitting, onS
         />
         {errors.email && (
           <span className="auth-page__error">{errors.email.message}</span>
+        )}
+      </div>
+
+      {/* Password */}
+      <div className="auth-page__field">
+        <label className="auth-page__label" htmlFor="password">
+          Password
+        </label>
+        <div className="auth-page__password-wrapper">
+          <input
+            className={inputClass("password")}
+            type={showPassword ? "text" : "password"}
+            id="password"
+            {...register("password")}
+          />
+          <button
+            type="button"
+            className="auth-page__eye-btn"
+            onClick={togglePassword}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? "🙈" : "👁"}
+          </button>
+        </div>
+        {errors.password && (
+          <span className="auth-page__error">{errors.password.message}</span>
         )}
       </div>
 

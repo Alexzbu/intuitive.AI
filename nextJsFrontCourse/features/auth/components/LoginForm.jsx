@@ -11,19 +11,19 @@ export function LoginForm({
 }) {
   return (
     <form className="auth-page__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-      {/* Username */}
+      {/* Email */}
       <div className="auth-page__field">
-        <label className="auth-page__label" htmlFor="username">
-          Username
+        <label className="auth-page__label" htmlFor="email">
+          Email
         </label>
         <input
-          className={`auth-page__input${errors.username ? " auth-page__input--error" : ""}`}
-          type="text"
-          id="username"
-          {...register("username")}
+          className={`auth-page__input${errors.email ? " auth-page__input--error" : ""}`}
+          type="email"
+          id="email"
+          {...register("email")}
         />
-        {errors.username && (
-          <span className="auth-page__error">{errors.username.message}</span>
+        {errors.email && (
+          <span className="auth-page__error">{errors.email.message}</span>
         )}
       </div>
 
