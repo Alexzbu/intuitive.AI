@@ -23,7 +23,7 @@ export default function CreateCourse() {
         <p className="create-course__subtitle">Choose the method that best fits your needs.</p>
 
         <div className="create-course__options">
-          <div className="create-course__option create-course__option--ai" onClick={() => router.push('/add-course')}>
+          <div className="create-course__option create-course__option--ai" onClick={() => router.push('/create-course-ai')}>
             <div className="create-course__icon create-course__icon--ai">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="4" y="6" width="16" height="12" rx="2" stroke="white" strokeWidth="1.8"/>
