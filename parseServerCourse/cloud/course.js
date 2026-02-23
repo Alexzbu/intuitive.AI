@@ -29,17 +29,43 @@ Parse.Cloud.define('getCourses', async (req) => {
 
 
 Parse.Cloud.define('addCourse', async (req) => {
-   const { course } = req.params
+   const { course, creatorId } = req.params
 
    const item = new Parse.Object('Course')
    item.set(course)
 
+   if (creatorId) {
+      const userPtr = Parse.Object.extend('_User').createWithoutData(creatorId)
+      item.set('createdBy', userPtr)
+   }
+
    try {
-      const savedCourse = await item.save()
+      const savedCourse = await item.save(null, { useMasterKey: true })
       return savedCourse.toJSON()
    } catch (error) {
       console.error('Failed to save Course:', error)
       throw new Parse.Error(Parse.Error.SCRIPT_FAILED, 'Failed to save Course')
+   }
+})
+
+Parse.Cloud.define('getCoursesByCreator', async (req) => {
+   const { creatorId, limit = 6, page = 0 } = req.params
+
+   if (!creatorId) {
+      throw new Parse.Error(Parse.Error.SCRIPT_FAILED, 'creatorId is required')
+   }
+
+   const userPtr = Parse.Object.extend('_User').createWithoutData(creatorId)
+   const query = new Parse.Query('Course')
+   query.equalTo('createdBy', userPtr)
+
+   try {
+      const totalCourses = await query.count({ useMasterKey: true })
+      query.limit(limit).skip(limit * page)
+      const courseList = await query.find({ useMasterKey: true })
+      return { totalCourses, courses: courseList }
+   } catch (error) {
+      return { error: `Failed to fetch courses: ${error.message}` }
    }
 })
 

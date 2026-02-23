@@ -1,10 +1,20 @@
 'use client'
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 
 const Navbar = () => {
    const router = useRouter()
+   const pathname = usePathname()
+   const [user, setUser] = useState(null)
+
+   useEffect(() => {
+      try {
+         const stored = localStorage.getItem('user')
+         setUser(stored ? JSON.parse(stored) : null)
+      } catch {}
+   }, [pathname])
 
    return (
       <header className="header">
@@ -20,11 +30,16 @@ const Navbar = () => {
          </nav>
          <div className="auth">
             <span className="nav__language">DE</span>
-            <button className="btn-auth" onClick={() => router.push('/login')}>Login</button>
-            <button className="btn-primary" onClick={() => router.push('/register')}>Sign Up</button>
+            {user ? (
+               <span className="nav__username">{user.firstName}</span>
+            ) : (
+               <>
+                  <button className="btn-auth" onClick={() => router.push('/login')}>Login</button>
+                  <button className="btn-primary" onClick={() => router.push('/register')}>Sign Up</button>
+               </>
+            )}
          </div>
       </header>
-
    )
 }
 

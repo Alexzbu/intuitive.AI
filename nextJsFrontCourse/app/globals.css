@@ -292,6 +292,19 @@ html {
   color: #1a4d7a;
 }
 
+.nav__username {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a4d7a;
+}
+
+.dashboard__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
 /* COURSES SECTION */
 .courses-section {
   padding: 80px 0;

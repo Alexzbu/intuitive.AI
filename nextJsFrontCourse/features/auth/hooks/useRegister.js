@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@apollo/client";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import client from "@/utils/apolloClient";
 import { registerSchema } from "../schemas/registerSchema";
 import { REGISTER_MUTATION } from "../api/authMutations";
@@ -10,6 +11,7 @@ import { REGISTER_MUTATION } from "../api/authMutations";
 export function useRegister() {
   const [showPassword, setShowPassword] = useState(false);
   const [registerUser] = useMutation(REGISTER_MUTATION, { client });
+  const router = useRouter();
 
   const {
     register,
@@ -39,7 +41,13 @@ export function useRegister() {
       if (!result.data?.register?.objectId) {
         throw new Error("Registration failed. Please try again.");
       }
+      localStorage.setItem("user", JSON.stringify({
+        objectId: result.data.register.objectId,
+        position: data.position,
+        firstName: data.firstName,
+      }));
       toast.success("Registration successful!", { id: toastId });
+      router.push("/dashboard");
     } catch (err) {
       toast.error(err.message || "Registration failed. Please try again.", { id: toastId });
     }

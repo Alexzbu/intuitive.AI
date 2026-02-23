@@ -8,8 +8,8 @@ import Chatbot from '@/components/openAI'
 import { toast } from 'react-hot-toast'
 
 const ADD_COURSE_MUTATION = gql`
-            mutation AddCourse($course: Object) {
-               addCourse(course: $course) {
+            mutation AddCourse($course: Object, $creatorId: ID) {
+               addCourse(course: $course, creatorId: $creatorId) {
                objectId
                name
                }
@@ -35,6 +35,15 @@ const GET_AI_ASSISTENT_HISTORY = gql`
 
 const AddCourse = () => {
    const router = useRouter()
+   const [user] = useState(() => {
+      if (typeof window === 'undefined') return null
+      try {
+         const stored = localStorage.getItem('user')
+         return stored ? JSON.parse(stored) : null
+      } catch {
+         return null
+      }
+   })
    const [inputId, setInputId] = useState('')
    const [title, setTitle] = useState('')
    const [subtitle, setSubtitle] = useState('')
@@ -87,7 +96,8 @@ const AddCourse = () => {
                   recommendation: recommendation,
                   key_words: key_words,
                   description: description,
-               }
+               },
+               creatorId: user?.objectId ?? null,
             },
          })
 

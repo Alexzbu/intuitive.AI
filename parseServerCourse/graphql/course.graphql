@@ -1,6 +1,7 @@
 type Query {
   getCourse(id: ID!): Course @resolve
   getCourses(name: String, limit: Int, page: Int): CourseResponse @resolve
+  getCoursesByCreator(creatorId: ID!, limit: Int, page: Int): CourseResponse @resolve
   getSections(name: String): [Section] @resolve
   getSection(id: ID!): Section @resolve
   getQuestions(name: String): [Question] @resolve
@@ -25,7 +26,7 @@ type Assistent {
   response: [responseNodeType]
 }
 type Mutation {
-  addCourse(course: Object): Course @resolve
+  addCourse(course: Object, creatorId: ID): Course @resolve
     
   upCourse(
     id: ID!,

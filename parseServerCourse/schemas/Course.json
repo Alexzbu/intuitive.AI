@@ -68,6 +68,10 @@
       "ai_assistent": {
          "type": "Pointer",
          "targetClass": "AI_Assistent"
+      },
+      "createdBy": {
+         "type": "Pointer",
+         "targetClass": "_User"
       }
    },
    "classLevelPermissions": {

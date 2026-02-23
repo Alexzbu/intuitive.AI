@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { gql, useQuery, useMutation } from "@apollo/client"
@@ -41,12 +41,9 @@ export default function Home() {
   const [del, setDel] = useState(false)
   const observerTarget = useRef(null)
 
-  const { data, loading, error, refetch, fetchMore } = useQuery(GET_COURSES_QUERY, {
+  const { data, loading, refetch } = useQuery(GET_COURSES_QUERY, {
     client,
-    variables: {
-      limit: limit,
-      page: page
-    }
+    variables: { limit, page }
   })
   const [delCourse, { loading: delLoading }] = useMutation(DEL_COURSE_MUTATION, { client })
 
@@ -59,7 +56,6 @@ export default function Home() {
       }
       setLoadingMore(false)
 
-      // Check if there are more courses to load
       const totalPages = Math.ceil(data.getCourses.totalCourses / limit)
       setHasMore(page < totalPages - 1)
     }
@@ -98,10 +94,8 @@ export default function Home() {
   const deleteItem = async (id) => {
     const toastId = toast.loading("Removing...")
     try {
-      const { data } = await delCourse({
-        variables: {
-          id: id
-        },
+      await delCourse({
+        variables: { id },
       })
       toast.success("Removed successfully!", { id: toastId })
       setDel(true)
