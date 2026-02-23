@@ -143,7 +143,7 @@ export default function Dashboard() {
         <div className="dashboard__header">
           <h2 className="section-title">{isTrainer ? 'My Courses' : 'All Courses'}</h2>
           {isTrainer && (
-            <Link className="btn-primary" href="/add-course">Create Course</Link>
+            <Link className="btn-primary" href="/create-course">Create Course</Link>
           )}
         </div>
 

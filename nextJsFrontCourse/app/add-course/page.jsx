@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { gql, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Chatbot from '@/components/openAI'
 import { toast } from 'react-hot-toast'
 
@@ -35,6 +35,8 @@ const GET_AI_ASSISTENT_HISTORY = gql`
 
 const AddCourse = () => {
    const router = useRouter()
+   const searchParams = useSearchParams()
+   const noAI = searchParams.get('noai') === 'true'
    const [user] = useState(() => {
       if (typeof window === 'undefined') return null
       try {
@@ -191,12 +193,14 @@ const AddCourse = () => {
          </div>
          <h1 className="title">Add new course</h1>
          <div className="form">
+            {!noAI && (
             <Chatbot setTitle={setTitle} setSubtitle={setSubtitle} setObjective={setObjective}
                setTarget_group={setTarget_group} setRecommendation={setRecommendation}
                setKey_words={setKey_words} setDescription={setDescription} setShowAI={setShowAI}
                questionsHistory={questionsHistory} setQuestionsHistory={setQuestionsHistory}
                resObjectsHistory={resObjectsHistory} setresObjectsHistory={setresObjectsHistory}
                showAI={showAI} inputId={inputId} />
+         )}
 
             <label className="form__label" htmlFor="title">Name of the course:</label>
             <div className='form_input-box'>
@@ -208,7 +212,7 @@ const AddCourse = () => {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                />
-               <button
+               {!noAI && <button
                   className="form__button actions-button__item actions-button__item--ai"
                   onClick={() => {
                      setShowAI(true);
@@ -217,7 +221,7 @@ const AddCourse = () => {
                      }
                   }}
                >AI
-               </button>
+               </button>}
             </div>
             {errors.title && <span className="error">{errors.title}</span>}
 
@@ -231,11 +235,11 @@ const AddCourse = () => {
                   value={subtitle}
                   onChange={(e) => setSubtitle(e.target.value)}
                />
-               <button
+               {!noAI && <button
                   className="form__button actions-button__item actions-button__item--ai"
                   onClick={() => { setShowAI(true); setInputId("subtitle") }}
                >AI
-               </button>
+               </button>}
             </div>
             {errors.subtitle && <span className="error">{errors.subtitle}</span>}
 
@@ -249,11 +253,11 @@ const AddCourse = () => {
                   value={objective}
                   onChange={(e) => setObjective(e.target.value)}
                />
-               <button
+               {!noAI && <button
                   className="form__button actions-button__item actions-button__item--ai"
                   onClick={() => { setShowAI(true); setInputId("objective") }}
                >AI
-               </button>
+               </button>}
             </div>
             {errors.objective && <span className="error">{errors.objective}</span>}
 
@@ -267,11 +271,11 @@ const AddCourse = () => {
                   value={target_group}
                   onChange={(e) => setTarget_group(e.target.value)}
                />
-               <button
+               {!noAI && <button
                   className="form__button actions-button__item actions-button__item--ai"
                   onClick={() => { setShowAI(true); setInputId("target_group") }}
                >AI
-               </button>
+               </button>}
             </div>
             {errors.target_group && <span className="error">{errors.target_group}</span>}
 
@@ -285,11 +289,11 @@ const AddCourse = () => {
                   value={recommendation}
                   onChange={(e) => setRecommendation(e.target.value)}
                />
-               <button
+               {!noAI && <button
                   className="form__button actions-button__item actions-button__item--ai"
                   onClick={() => { setShowAI(true); setInputId("recommendation") }}
                >AI
-               </button>
+               </button>}
             </div>
             {errors.target_group && <span className="error">{errors.target_group}</span>}
 
@@ -303,11 +307,11 @@ const AddCourse = () => {
                   value={key_words}
                   onChange={(e) => setKey_words([e.target.value])}
                />
-               <button
+               {!noAI && <button
                   className="form__button actions-button__item actions-button__item--ai"
                   onClick={() => { setShowAI(true); setInputId("key_words") }}
                >AI
-               </button>
+               </button>}
             </div>
             {errors.target_group && <span className="error">{errors.target_group}</span>}
 
@@ -320,11 +324,11 @@ const AddCourse = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                ></textarea>
-               <button
+               {!noAI && <button
                   className="form__button actions-button__item actions-button__item--ai"
                   onClick={() => { setShowAI(true); setInputId("description") }}
                >AI
-               </button>
+               </button>}
             </div>
             {errors.description && <span className="error">{errors.description}</span>}
 
