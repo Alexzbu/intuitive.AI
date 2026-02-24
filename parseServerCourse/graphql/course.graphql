@@ -110,5 +110,17 @@ type Mutation {
   addAiAssistentHistory(course_id: ID, questionsHistory: String, resObjectsHistory: [Object]): Object @resolve
   getAiAssistentHistory(prompt: String!): [Assistent] @resolve
 
+  generateCourseTitles(
+    language: String,
+    targetAudience: String,
+    goal: String,
+    duration: String,
+    description: String,
+    expertiseLevel: String,
+    styleTone: String,
+    topics: String,
+    additionalConstraints: String
+  ): [String] @resolve
+
 
 }
