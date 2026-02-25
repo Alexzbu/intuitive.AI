@@ -25,12 +25,13 @@ const Navbar = () => {
             <Link href="/#courses-section" className="nav__link">Courses</Link>
             <Link href="/whiteboard" className="nav__link">Whiteboard</Link>
             <Link href="#faqs" className="nav__link">FAQs</Link>
-            <Link href="#contact" className="nav__link">Contact Us</Link>
          </nav>
          <div className="auth">
-            <span className="nav__language">DE</span>
             {user ? (
-               <span className="nav__username">{user.firstName}</span>
+               <>
+                  <Link href="/dashboard" className="nav__link">Dashboard</Link>
+                  <span className="nav__username">{user.firstName}</span>
+               </>
             ) : (
                <>
                   <button className="btn-auth" onClick={() => router.push('/login')}>Login</button>
