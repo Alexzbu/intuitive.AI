@@ -13,7 +13,7 @@ const Navbar = () => {
       try {
          const stored = localStorage.getItem('user')
          setUser(stored ? JSON.parse(stored) : null)
-      } catch {}
+      } catch { }
    }, [pathname])
 
    return (
@@ -22,9 +22,8 @@ const Navbar = () => {
             <Link href="/" className="header__logo">AGI INSTITUTE</Link>
          </div>
          <nav className="nav">
-            <Link href="#about" className="nav__link">About Us</Link>
-            <Link href="#courses-section" className="nav__link">Courses</Link>
-            <Link href="#news" className="nav__link">News</Link>
+            <Link href="/#courses-section" className="nav__link">Courses</Link>
+            <Link href="/whiteboard" className="nav__link">Whiteboard</Link>
             <Link href="#faqs" className="nav__link">FAQs</Link>
             <Link href="#contact" className="nav__link">Contact Us</Link>
          </nav>
