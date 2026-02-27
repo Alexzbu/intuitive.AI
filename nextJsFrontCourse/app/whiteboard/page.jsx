@@ -2,7 +2,19 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import ExcalidrawWrapper from "@/components/Excalidrow";
+import { Spinner, AbsoluteCenter } from "@chakra-ui/react"
+import dynamic from "next/dynamic";
+
+const ExcalidrawWrapper = dynamic(() => import("@/components/excalidrow/Excalidrow"), {
+    ssr: false,
+    loading: () => {
+        return (
+            <AbsoluteCenter h="full">
+                <Spinner color="blue.500" size="xl" />
+            </AbsoluteCenter>
+        )
+    },
+});
 
 function WhiteboardContent() {
     const searchParams = useSearchParams();
@@ -13,7 +25,7 @@ function WhiteboardContent() {
 
 export default function WhiteboardPage() {
     return (
-        <Suspense fallback={<div>Loading whiteboard...</div>}>
+        <Suspense fallback={<Spinner color="blue.500" size="xl" />}>
             <WhiteboardContent />
         </Suspense>
     );

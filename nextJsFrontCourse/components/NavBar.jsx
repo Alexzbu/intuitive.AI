@@ -23,7 +23,7 @@ const Navbar = () => {
          </div>
          <nav className="nav">
             <Link href="/#courses-section" className="nav__link">Courses</Link>
-            <Link href="/whiteboard" className="nav__link">Whiteboard</Link>
+            <Link href="/whiteboard?id=mycourse" className="nav__link">Whiteboard</Link>
             <Link href="#faqs" className="nav__link">FAQs</Link>
          </nav>
          <div className="auth">

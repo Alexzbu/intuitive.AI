@@ -6,6 +6,9 @@ import { io } from "socket.io-client";
 export function useWhiteboardCollab(roomId) {
     const socketRef = useRef(null);
     const updateTimerRef = useRef(null);
+    // Maps elementId → highest version received from server
+    // Used by Excalidrow to skip re-emitting server-sourced updates
+    const remoteVersionsRef = useRef(new Map());
 
     const [role, setRole] = useState("viewer");
     const [canDraw, setCanDraw] = useState(false);
@@ -39,11 +42,13 @@ export function useWhiteboardCollab(roomId) {
             const isPermitted = permSet.has(user.objectId);
             setCanDraw(isHost || isPermitted);
             if (elements && elements.length > 0) {
+                elements.forEach(el => remoteVersionsRef.current.set(el.id, el.version));
                 setRemoteElements(elements);
             }
         });
 
         socket.on("whiteboard-update", (elements) => {
+            elements.forEach(el => remoteVersionsRef.current.set(el.id, el.version));
             setRemoteElements(elements);
         });
 
@@ -95,5 +100,5 @@ export function useWhiteboardCollab(roomId) {
         [roomId]
     );
 
-    return { role, canDraw, users, permissions, remoteElements, sendUpdate, grantPermission, revokePermission };
+    return { role, canDraw, users, permissions, remoteElements, remoteVersionsRef, sendUpdate, grantPermission, revokePermission };
 }
