@@ -3,159 +3,212 @@
 import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import { useRef, useEffect, useState } from "react";
+import {
+   Box,
+   Flex,
+   Text,
+   Button,
+   VStack,
+   HStack,
+   Badge,
+   Collapsible,
+} from "@chakra-ui/react";
+import { ChevronDown } from "lucide-react";
 import { useWhiteboardCollab } from "@/hooks/useWhiteboardCollab";
 
 function ParticipantsPanel({ users, permissions, onGrant, onRevoke }) {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("user") : null;
-    const currentUserId = stored ? JSON.parse(stored).objectId : null;
+   const stored =
+      typeof window !== "undefined" ? localStorage.getItem("user") : null;
+   const currentUserId = stored ? JSON.parse(stored).objectId : null;
 
-    return (
-        <div style={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            zIndex: 10,
-            background: "white",
-            border: "1px solid #e0e0e0",
-            borderRadius: 10,
-            padding: "12px 14px",
-            minWidth: 210,
-            boxShadow: "0 2px 12px rgba(0,0,0,0.10)",
-            fontFamily: "sans-serif",
-            fontSize: 14,
-        }}>
-            <div style={{ fontWeight: 700, marginBottom: 8, color: "#333" }}>Participants</div>
-            {users.length === 0 && (
-                <div style={{ color: "#999", fontSize: 12 }}>No viewers yet</div>
-            )}
-            {users.map((user) => {
-                const isYou = user.userId === currentUserId;
-                const isPermitted = permissions.has(user.userId);
+   return (
+      <Collapsible.Root defaultOpen>
+         <Box
+            position="absolute"
+            top={3}
+            right={3}
+            zIndex={10}
+            bg="white"
+            borderWidth="1px"
+            borderColor="gray.200"
+            borderRadius="xl"
+            minW="230px"
+            boxShadow="xl"
+            overflow="hidden"
+         >
+            {/* Header */}
+            <Collapsible.Trigger asChild>
+               <Flex
+                  align="center"
+                  justify="space-between"
+                  px={4}
+                  py={3}
+                  cursor="pointer"
+                  _hover={{ bg: "gray.50" }}
+               >
+                  <HStack spacing={2}>
+                     <Text fontWeight="bold" fontSize="sm">
+                        Participants
+                     </Text>
+                     <Badge colorScheme="gray" fontSize="0.65rem">
+                        {users.length}
+                     </Badge>
+                  </HStack>
 
-                return (
-                    <div key={user.userId} style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "5px 0",
-                        borderBottom: "1px solid #f0f0f0",
-                    }}>
-                        <span style={{ color: "#444" }}>
-                            {user.firstName}
-                            {user.role === "host" && (
-                                <span style={{ marginLeft: 6, fontSize: 11, color: "#6366f1", fontWeight: 600 }}>host</span>
-                            )}
-                            {isYou && (
-                                <span style={{ marginLeft: 4, fontSize: 11, color: "#999" }}>(you)</span>
-                            )}
-                        </span>
-                        {user.role !== "host" && !isYou && (
-                            isPermitted ? (
-                                <button
-                                    onClick={() => onRevoke(user.userId)}
-                                    style={{
-                                        fontSize: 11,
-                                        padding: "2px 8px",
-                                        borderRadius: 5,
-                                        border: "1px solid #f87171",
-                                        background: "#fff1f1",
-                                        color: "#dc2626",
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    Revoke
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={() => onGrant(user.userId)}
-                                    style={{
-                                        fontSize: 11,
-                                        padding: "2px 8px",
-                                        borderRadius: 5,
-                                        border: "1px solid #6366f1",
-                                        background: "#eff6ff",
-                                        color: "#4f46e5",
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    Allow Draw
-                                </button>
-                            )
-                        )}
-                    </div>
-                );
-            })}
-        </div>
-    );
+                  <Collapsible.Context>
+                     {(context) => (
+                        <Box
+                           transition="transform 0.2s"
+                           transform={context.open ? "rotate(180deg)" : "rotate(0deg)"}
+                        >
+                           <ChevronDown size={16} />
+                        </Box>
+                     )}
+                  </Collapsible.Context>
+               </Flex>
+            </Collapsible.Trigger>
+
+            {/* Body */}
+            <Collapsible.Content>
+               <Box px={4} pb={3}>
+                  <VStack align="stretch" spacing={2}>
+                     {users.map((user) => {
+                        const isYou = user.userId === currentUserId;
+                        const isPermitted = permissions.has(user.userId);
+
+                        return (
+                           <Flex
+                              key={user.userId}
+                              justify="space-between"
+                              align="center"
+                              py={1}
+                              borderBottom="1px solid"
+                              borderColor="gray.100"
+                           >
+                              <HStack spacing={2}>
+                                 <Text fontSize="sm" color="gray.700">
+                                    {user.firstName}
+                                 </Text>
+
+                                 {user.role === "host" && (
+                                    <Badge colorScheme="purple" fontSize="0.6rem">
+                                       host
+                                    </Badge>
+                                 )}
+
+                                 {isYou && (
+                                    <Text fontSize="xs" color="gray.400">
+                                       (you)
+                                    </Text>
+                                 )}
+                              </HStack>
+
+                              {user.role !== "host" && !isYou &&
+                                 (isPermitted ? (
+                                    <Button
+                                       size="xs"
+                                       colorPalette="red"
+                                       variant="surface"
+                                       onClick={() => onRevoke(user.userId)}
+                                    >
+                                       Revoke
+                                    </Button>
+                                 ) : (
+                                    <Button
+                                       size="xs"
+                                       colorPalette="blue"
+                                       variant="surface"
+                                       onClick={() => onGrant(user.userId)}
+                                    >
+                                       Allow
+                                    </Button>
+                                 ))}
+                           </Flex>
+                        );
+                     })}
+
+                     {users.length < 2 && (
+                        <Text fontSize="xs" color="gray.400">
+                           No viewers yet
+                        </Text>
+                     )}
+                  </VStack>
+               </Box>
+            </Collapsible.Content>
+         </Box>
+      </Collapsible.Root>
+   );
 }
 
 const ExcalidrawWrapper = ({ courseId = "global-room" }) => {
-    const [excalidrawAPI, setExcalidrawAPI] = useState(null);
-    const isRemoteUpdate = useRef(false);
+   const [excalidrawAPI, setExcalidrawAPI] = useState(null);
+   const isRemoteUpdate = useRef(false);
 
-    const {
-        role,
-        canDraw,
-        users,
-        permissions,
-        remoteElements,
-        sendUpdate,
-        grantPermission,
-        revokePermission,
-    } = useWhiteboardCollab(courseId);
+   const {
+      role,
+      canDraw,
+      users,
+      permissions,
+      remoteElements,
+      sendUpdate,
+      grantPermission,
+      revokePermission,
+   } = useWhiteboardCollab(courseId);
 
-    // Apply incoming remote canvas state without echoing it back
-    useEffect(() => {
-        if (remoteElements && excalidrawAPI) {
-            isRemoteUpdate.current = true;
-            excalidrawAPI.updateScene({ elements: remoteElements });
-        }
-    }, [remoteElements, excalidrawAPI]);
+   useEffect(() => {
+      if (remoteElements && excalidrawAPI) {
+         isRemoteUpdate.current = true;
+         excalidrawAPI.updateScene({ elements: remoteElements });
+      }
+   }, [remoteElements, excalidrawAPI]);
 
-    const handleChange = (elements) => {
-        if (isRemoteUpdate.current) {
-            isRemoteUpdate.current = false;
-            return;
-        }
-        if (canDraw) {
-            sendUpdate(elements);
-        }
-    };
+   const handleChange = (elements) => {
+      if (isRemoteUpdate.current) {
+         isRemoteUpdate.current = false;
+         return;
+      }
+      if (canDraw) {
+         sendUpdate(elements);
+      }
+   };
 
-    return (
-        <div style={{ height: "600px", width: "100%", position: "relative" }}>
-            {role === "host" && (
-                <ParticipantsPanel
-                    users={users}
-                    permissions={permissions}
-                    onGrant={grantPermission}
-                    onRevoke={revokePermission}
-                />
-            )}
-            {!canDraw && role !== "host" && (
-                <div style={{
-                    position: "absolute",
-                    top: 12,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    zIndex: 10,
-                    background: "rgba(0,0,0,0.55)",
-                    color: "white",
-                    borderRadius: 8,
-                    padding: "5px 14px",
-                    fontSize: 13,
-                    pointerEvents: "none",
-                }}>
-                    View only — waiting for host to grant draw access
-                </div>
-            )}
-            <Excalidraw
-                excalidrawAPI={(api) => setExcalidrawAPI(api)}
-                onChange={handleChange}
-                viewModeEnabled={!canDraw}
+   return (
+      <Box h="600px" w="100%" position="relative">
+         {role === "host" && (
+            <ParticipantsPanel
+               users={users}
+               permissions={permissions}
+               onGrant={grantPermission}
+               onRevoke={revokePermission}
             />
-        </div>
-    );
+         )}
+
+         {!canDraw && role !== "host" && (
+            <Box
+               position="absolute"
+               top={3}
+               left="50%"
+               transform="translateX(-50%)"
+               zIndex={10}
+               bg="blackAlpha.600"
+               color="white"
+               borderRadius="md"
+               px={4}
+               py={1.5}
+               fontSize="sm"
+               pointerEvents="none"
+            >
+               View only — waiting for host to grant draw access
+            </Box>
+         )}
+
+         <Excalidraw
+            excalidrawAPI={(api) => setExcalidrawAPI(api)}
+            onChange={handleChange}
+            viewModeEnabled={!canDraw}
+         />
+      </Box>
+   );
 };
 
 export default ExcalidrawWrapper;
