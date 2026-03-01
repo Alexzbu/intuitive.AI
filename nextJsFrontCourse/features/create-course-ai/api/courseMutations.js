@@ -14,6 +14,22 @@ export const GENERATE_COURSE_TITLES = gql`
   }
 `;
 
+export const GENERATE_COURSE_OUTLINE = gql`
+  mutation generateCourseOutline(
+    $language: String, $targetAudience: String, $goal: String,
+    $duration: String, $description: String, $expertiseLevel: String,
+    $styleTone: String, $topics: String, $additionalConstraints: String,
+    $courseTitle: String
+  ) {
+    generateCourseOutline(
+      language: $language, targetAudience: $targetAudience, goal: $goal,
+      duration: $duration, description: $description, expertiseLevel: $expertiseLevel,
+      styleTone: $styleTone, topics: $topics, additionalConstraints: $additionalConstraints,
+      courseTitle: $courseTitle
+    )
+  }
+`;
+
 export const STEPS = [
   { num: 1, label: "Basic Info" },
   { num: 2, label: "Detailed Info" },

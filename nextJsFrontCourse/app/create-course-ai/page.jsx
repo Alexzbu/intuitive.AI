@@ -8,6 +8,7 @@ import {
   StepDetailedInfo,
   StepReview,
   StepTitleSelection,
+  StepCourseOutline,
   StepAppointment,
 } from "@/features/create-course-ai";
 
@@ -16,7 +17,8 @@ const STEP_MAP = {
   1: StepDetailedInfo,
   2: StepReview,
   3: StepTitleSelection,
-  4: StepAppointment,
+  4: StepCourseOutline,
+  5: StepAppointment,
 };
 
 export default function CreateCourseAI() {

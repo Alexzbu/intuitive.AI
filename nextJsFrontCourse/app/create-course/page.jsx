@@ -11,7 +11,7 @@ import {
   HStack,
   Card,
 } from "@chakra-ui/react"
-import { ArrowBigLeft, Bot, Pencil } from "lucide-react"
+import { ChevronLeft, Bot, Pencil } from "lucide-react"
 
 export default function CreateCourse() {
   const router = useRouter()
@@ -27,7 +27,7 @@ export default function CreateCourse() {
           _hover={{ color: "blue.700", bg: "transparent" }}
           px={0}
         >
-          <ArrowBigLeft size={16} />
+          <ChevronLeft size={20} />
           Back
         </Button>
       </Box>

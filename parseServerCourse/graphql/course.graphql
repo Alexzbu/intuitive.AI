@@ -122,5 +122,17 @@ type Mutation {
     additionalConstraints: String
   ): [String] @resolve
 
+  generateCourseOutline(
+    language: String,
+    targetAudience: String,
+    goal: String,
+    duration: String,
+    description: String,
+    expertiseLevel: String,
+    styleTone: String,
+    topics: String,
+    additionalConstraints: String,
+    courseTitle: String
+  ): [Object] @resolve
 
 }
