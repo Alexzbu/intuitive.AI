@@ -38,7 +38,6 @@ Format: ["Title 1", "Title 2", "Title 3", "Title 4", "Title 5"]
    })
 
    const content = response.text
-   console.log('AI Response:', content) // For debugging
 
    try {
       const cleaned = content.replace(/```json\n?|```/g, '').trim()
