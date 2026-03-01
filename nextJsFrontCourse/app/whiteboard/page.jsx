@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Spinner, AbsoluteCenter } from "@chakra-ui/react"
 import dynamic from "next/dynamic";
 
-const ExcalidrawWrapper = dynamic(() => import("@/components/excalidrow/Excalidrow"), {
+const ExcalidrawWrapper = dynamic(() => import("@/features/whiteboard/components/Excalidrow"), {
     ssr: false,
     loading: () => {
         return (

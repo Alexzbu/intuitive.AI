@@ -1,54 +1,146 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+  HStack,
+  Card,
+} from "@chakra-ui/react"
+import { ArrowBigLeft, Bot, Pencil } from "lucide-react"
 
 export default function CreateCourse() {
   const router = useRouter()
 
   return (
-    <div className="create-course">
-      <div className="create-course__header">
-        <button className="create-course__back" onClick={() => router.back()}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+    <Box px={{ base: 6, md: 10 }} py={8} minH="100vh" bg="white">
+      {/* Header */}
+      <Box mb={6}>
+        <Button
+          variant="ghost"
+          onClick={() => router.back()}
+          color="gray.600"
+          _hover={{ color: "blue.700", bg: "transparent" }}
+          px={0}
+        >
+          <ArrowBigLeft size={16} />
           Back
-        </button>
-      </div>
+        </Button>
+      </Box>
 
-      <h1 className="create-course__title">Create New Course</h1>
+      {/* Title */}
+      <Heading size="xl" mb={16} textAlign="center">
+        Create New Course
+      </Heading>
 
-      <div className="create-course__selection">
-        <h2 className="create-course__heading">How would you like to create your course?</h2>
-        <p className="create-course__subtitle">Choose the method that best fits your needs.</p>
+      {/* Center Section */}
+      <VStack maxW="680px" mx="auto" spacing={10} textAlign="center">
+        <Box>
+          <Heading size="md" mb={2}>
+            How would you like to create your course?
+          </Heading>
+          <Text fontSize="sm" color="gray.500">
+            Choose the method that best fits your needs.
+          </Text>
+        </Box>
 
-        <div className="create-course__options">
-          <div className="create-course__option create-course__option--ai" onClick={() => router.push('/create-course-ai')}>
-            <div className="create-course__icon create-course__icon--ai">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="6" width="16" height="12" rx="2" stroke="white" strokeWidth="1.8"/>
-                <circle cx="9" cy="11" r="1.5" fill="white"/>
-                <circle cx="15" cy="11" r="1.5" fill="white"/>
-                <path d="M9 14.5c.8.8 2.2.8 3 0" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M8 6V4M16 6V4" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
-                <path d="M2 10h2M20 10h2" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <h3 className="create-course__option-title">Create Course with AI</h3>
-            <p className="create-course__option-desc">Let AI guide you through the entire course creation process</p>
-          </div>
+        {/* Cards */}
+        <HStack
+          spacing={6}
+          align="stretch"
+          justify="center"
+          flexDir={{ base: "column", md: "row" }}
+        >
+          {/* AI Card */}
+          <Card.Root
+            flex="1"
+            maxW="280px"
+            cursor="pointer"
+            borderWidth="1.5px"
+            borderColor="blue.200"
+            bg="blue.50"
+            borderRadius="2xl"
+            transition="all 0.2s ease"
+            _hover={{
+              boxShadow: "xl",
+              transform: "translateY(-4px)",
+            }}
+            _active={{
+              transform: "translateY(-1px)",
+            }}
+            onClick={() => router.push("/create-course-ai")}
+          >
+            <Card.Body>
+              <VStack spacing={5}>
+                <Flex
+                  w="64px"
+                  h="64px"
+                  borderRadius="full"
+                  bg="blue.600"
+                  align="center"
+                  justify="center"
+                >
+                  <Bot size={26} color="white" />
+                </Flex>
 
-          <div className="create-course__option create-course__option--manual" onClick={() => router.push('/add-course?noai=true')}>
-            <div className="create-course__icon create-course__icon--manual">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="white"/>
-              </svg>
-            </div>
-            <h3 className="create-course__option-title">Create Course without AI</h3>
-            <p className="create-course__option-desc">Create your course manually with full control</p>
-          </div>
-        </div>
-      </div>
-    </div>
+                <Heading size="sm">
+                  Create Course with AI
+                </Heading>
+
+                <Text fontSize="sm" color="gray.600">
+                  Let AI guide you through the entire course creation process
+                </Text>
+              </VStack>
+            </Card.Body>
+          </Card.Root>
+
+          {/* Manual Card */}
+          <Card.Root
+            flex="1"
+            maxW="280px"
+            cursor="pointer"
+            borderWidth="1.5px"
+            borderColor="gray.200"
+            borderRadius="2xl"
+            transition="all 0.2s ease"
+            _hover={{
+              boxShadow: "xl",
+              transform: "translateY(-4px)",
+            }}
+            _active={{
+              transform: "translateY(-1px)",
+            }}
+            onClick={() => router.push("/add-course?noai=true")}
+          >
+            <Card.Body>
+              <VStack spacing={5}>
+                <Flex
+                  w="64px"
+                  h="64px"
+                  borderRadius="full"
+                  bg="gray.800"
+                  align="center"
+                  justify="center"
+                >
+                  <Pencil size={24} color="white" />
+                </Flex>
+
+                <Heading size="sm">
+                  Create Course without AI
+                </Heading>
+
+                <Text fontSize="sm" color="gray.600">
+                  Create your course manually with full control
+                </Text>
+              </VStack>
+            </Card.Body>
+          </Card.Root>
+        </HStack>
+      </VStack>
+    </Box>
   )
 }

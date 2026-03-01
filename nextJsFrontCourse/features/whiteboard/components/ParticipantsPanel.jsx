@@ -86,7 +86,7 @@ export function ParticipantsPanel({ users, permissions, onGrant, onRevoke }) {
                                  </Text>
 
                                  {user.role === "host" && (
-                                    <Badge colorScheme="purple" fontSize="0.6rem">
+                                    <Badge colorPalette="purple" fontSize="0.6rem">
                                        host
                                     </Badge>
                                  )}

@@ -4,7 +4,7 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
-import { useWhiteboardCollab } from "@/hooks/useWhiteboardCollab";
+import { useWhiteboardCollab } from "@/features/whiteboard/hooks/useWhiteboardCollab";
 import { ParticipantsPanel } from "./ParticipantsPanel";
 
 
@@ -43,12 +43,17 @@ const ExcalidrawWrapper = ({ courseId = "global-room" }) => {
 
    return (
       <Box h="600px" w="100%" position="relative">
-         {role === "host" && (
+         {role === "host" ? (
             <ParticipantsPanel
                users={users}
                permissions={permissions}
                onGrant={grantPermission}
                onRevoke={revokePermission}
+            />
+         ) : (
+            <ParticipantsPanel
+               users={users}
+               permissions={permissions}
             />
          )}
 

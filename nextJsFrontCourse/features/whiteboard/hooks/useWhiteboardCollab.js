@@ -6,8 +6,6 @@ import { io } from "socket.io-client";
 export function useWhiteboardCollab(roomId) {
     const socketRef = useRef(null);
     const updateTimerRef = useRef(null);
-    // Maps elementId → highest version received from server
-    // Used by Excalidrow to skip re-emitting server-sourced updates
     const remoteVersionsRef = useRef(new Map());
 
     const [role, setRole] = useState("viewer");
