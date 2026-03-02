@@ -7,6 +7,7 @@ import client from "@/utils/apolloClient"
 import Video from "@/components/show-questions/video"
 import PDF from "@/components/show-questions/pdf-file"
 import Quiz from "@/components/show-questions/quiz"
+import { Center, Link } from "@chakra-ui/react"
 
 const GET_COURSE_QUERY = gql`
    query getCourse($id: ID!) {
@@ -54,6 +55,11 @@ const Course = () => {
          <div className="course">
             <h2>{dataCourse?.getCourse?.name}</h2>
             <p>{dataCourse?.getCourse?.description}</p>
+            <Center >
+               <Link href={`/whiteboard?id=${courseId}`} color="blue.500" fontSize="lg">
+                  Go to whiteboard
+               </Link>
+            </Center>
 
             <div className="course__box">
                <div className="course__sections sections">

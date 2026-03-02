@@ -72,6 +72,10 @@
       "createdBy": {
          "type": "Pointer",
          "targetClass": "_User"
+      },
+      "participants": {
+         "type": "Relation",
+         "targetClass": "_User"
       }
    },
    "classLevelPermissions": {

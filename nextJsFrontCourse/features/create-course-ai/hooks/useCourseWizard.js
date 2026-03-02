@@ -10,7 +10,6 @@ import {
   defaultFormData,
 } from "../api/courseMutations";
 
-// Maps wizard step → sidebar index (steps 3 and 4 both map to sidebar 3 "Course Outline")
 const STEP_TO_SIDEBAR = [0, 1, 2, 3, 3, 4];
 
 const genId = () => crypto.randomUUID();
@@ -37,13 +36,13 @@ export function useCourseWizard() {
     try {
       const saved = localStorage.getItem("course_ai_draft");
       if (saved) setFormData(JSON.parse(saved));
-    } catch {}
+    } catch { }
   }, []);
 
   useEffect(() => {
     try {
       localStorage.setItem("course_ai_draft", JSON.stringify(formData));
-    } catch {}
+    } catch { }
   }, [formData]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -118,7 +117,6 @@ export function useCourseWizard() {
     }
   };
 
-  // ── Outline CRUD handlers ──────────────────────────────────────────────────
 
   const updateModuleTitle = (moduleId, newTitle) => {
     setOutline((prev) =>
@@ -132,11 +130,11 @@ export function useCourseWizard() {
         mod.id !== moduleId
           ? mod
           : {
-              ...mod,
-              chapters: mod.chapters.map((ch) =>
-                ch.id === chapterId ? { ...ch, title: newTitle } : ch
-              ),
-            }
+            ...mod,
+            chapters: mod.chapters.map((ch) =>
+              ch.id === chapterId ? { ...ch, title: newTitle } : ch
+            ),
+          }
       )
     );
   };
@@ -158,9 +156,9 @@ export function useCourseWizard() {
         mod.id !== moduleId
           ? mod
           : {
-              ...mod,
-              chapters: [...mod.chapters, { id: genId(), title: "New Chapter" }],
-            }
+            ...mod,
+            chapters: [...mod.chapters, { id: genId(), title: "New Chapter" }],
+          }
       )
     );
   };

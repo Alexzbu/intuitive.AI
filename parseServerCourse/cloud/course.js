@@ -135,5 +135,23 @@ Parse.Cloud.define("delCourse", async (req) => {
    }
 })
 
+Parse.Cloud.define('enrollInCourse', async (req) => {
+   const { courseId, userId } = req.params
+   const course = await new Parse.Query('Course').get(courseId, { useMasterKey: true })
+   const userPtr = Parse.Object.extend('_User').createWithoutData(userId)
+   course.relation('participants').add(userPtr)
+   await course.save(null, { useMasterKey: true })
+   return { success: true }
+})
+
+Parse.Cloud.define('isEnrolledInCourse', async (req) => {
+   const { courseId, userId } = req.params
+   const course = await new Parse.Query('Course').get(courseId, { useMasterKey: true })
+   const query = course.relation('participants').query()
+   query.equalTo('objectId', userId)
+   const count = await query.count({ useMasterKey: true })
+   return count > 0
+})
+
 
 

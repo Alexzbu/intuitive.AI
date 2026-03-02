@@ -1,4 +1,9 @@
-// In-memory room state for whiteboard collaboration
+import Parse from 'parse/node.js'
+import parseConfig from '../config/parseConfig.mjs'
+
+Parse.initialize(parseConfig.appId, null, parseConfig.masterKey)
+Parse.serverURL = parseConfig.serverURL
+
 const rooms = {}
 
 function getOrCreateRoom(roomId) {
@@ -6,8 +11,8 @@ function getOrCreateRoom(roomId) {
         rooms[roomId] = {
             hostId: null,
             elements: [],
-            permissions: new Set(),  // userIds allowed to draw (besides host)
-            users: new Map()         // socketId → { userId, firstName, role }
+            permissions: new Set(),
+            users: new Map()
         }
     }
     return rooms[roomId]
@@ -26,7 +31,26 @@ export function initWhiteboardCollab(io) {
         const { userId, position, firstName } = socket.handshake.auth
         let currentRoomId = null
 
-        socket.on('join-room', (roomId) => {
+        socket.on('join-room', async (roomId) => {
+            if (roomId !== 'global-room') {
+                try {
+                    const course = await new Parse.Query('Course').get(roomId, { useMasterKey: true })
+                    const creatorId = course.get('createdBy')?.id
+                    if (creatorId !== userId) {
+                        const q = course.relation('participants').query()
+                        q.equalTo('objectId', userId)
+                        const count = await q.count({ useMasterKey: true })
+                        if (count === 0) {
+                            socket.emit('access-denied', { message: 'You must be enrolled in this course to access the whiteboard.' })
+                            return
+                        }
+                    }
+                } catch {
+                    socket.emit('access-denied', { message: 'Course not found.' })
+                    return
+                }
+            }
+
             if (currentRoomId) {
                 socket.leave(currentRoomId)
                 const prevRoom = rooms[currentRoomId]

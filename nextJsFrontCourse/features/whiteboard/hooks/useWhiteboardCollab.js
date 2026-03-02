@@ -13,6 +13,8 @@ export function useWhiteboardCollab(roomId) {
     const [users, setUsers] = useState([]);
     const [permissions, setPermissions] = useState(new Set());
     const [remoteElements, setRemoteElements] = useState(null);
+    const [accessDenied, setAccessDenied] = useState(false);
+    const [deniedMessage, setDeniedMessage] = useState("");
 
     useEffect(() => {
         const stored = localStorage.getItem("user");
@@ -52,6 +54,11 @@ export function useWhiteboardCollab(roomId) {
 
         socket.on("users-updated", (updatedUsers) => {
             setUsers(updatedUsers);
+        });
+
+        socket.on("access-denied", ({ message }) => {
+            setAccessDenied(true);
+            setDeniedMessage(message);
         });
 
         socket.on("permission-updated", ({ userId, canDraw: draw }) => {
@@ -98,5 +105,5 @@ export function useWhiteboardCollab(roomId) {
         [roomId]
     );
 
-    return { role, canDraw, users, permissions, remoteElements, remoteVersionsRef, sendUpdate, grantPermission, revokePermission };
+    return { role, canDraw, users, permissions, remoteElements, remoteVersionsRef, sendUpdate, grantPermission, revokePermission, accessDenied, deniedMessage };
 }

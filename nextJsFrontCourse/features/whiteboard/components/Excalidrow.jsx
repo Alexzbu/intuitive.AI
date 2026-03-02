@@ -3,7 +3,7 @@
 import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import { useEffect, useState } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, Text, VStack } from "@chakra-ui/react";
 import { useWhiteboardCollab } from "@/features/whiteboard/hooks/useWhiteboardCollab";
 import { ParticipantsPanel } from "./ParticipantsPanel";
 
@@ -22,6 +22,8 @@ const ExcalidrawWrapper = ({ courseId = "global-room" }) => {
       sendUpdate,
       grantPermission,
       revokePermission,
+      accessDenied,
+      deniedMessage,
    } = useWhiteboardCollab(courseId);
 
    useEffect(() => {
@@ -40,6 +42,17 @@ const ExcalidrawWrapper = ({ courseId = "global-room" }) => {
          sendUpdate(elements);
       }
    };
+
+   if (accessDenied) {
+      return (
+         <Box h="600px" w="100%" display="flex" alignItems="center" justifyContent="center" bg="gray.50">
+            <VStack gap={3}>
+               <Text fontSize="xl" fontWeight="semibold" color="red.500">Access Denied</Text>
+               <Text color="gray.600">{deniedMessage}</Text>
+            </VStack>
+         </Box>
+      );
+   }
 
    return (
       <Box h="600px" w="100%" position="relative">
