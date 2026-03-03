@@ -143,8 +143,10 @@ const CourseContent = () => {
 }
 
 const Course = () => {
-   <Suspense fallback={<Center><Spinner size="xl" /></Center>}>
-      <CourseContent />
-   </Suspense>
+   return (
+      <Suspense fallback={<Center><Spinner size="xl" /></Center>}>
+         <CourseContent />
+      </Suspense>
+   )
 }
 export default Course
