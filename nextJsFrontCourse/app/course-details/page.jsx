@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from "next/navigation"
 import { gql, useQuery, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
@@ -36,7 +36,7 @@ const ENROLL_MUTATION = gql`
              enrollInCourse(courseId: $courseId, userId: $userId)
          }`
 
-const CourseDetails = () => {
+const CourseDetailsContent = () => {
    const router = useRouter()
    const searchParams = useSearchParams()
    const courseId = searchParams.get("id")
@@ -115,5 +115,11 @@ const CourseDetails = () => {
       </div>
    )
 }
+
+const CourseDetails = () => (
+   <Suspense fallback={<Loading />}>
+      <CourseDetailsContent />
+   </Suspense>
+)
 
 export default CourseDetails
