@@ -5,6 +5,7 @@ import { Server } from 'socket.io'
 import gql from 'graphql-tag'
 import fs from 'fs'
 import parseConfig from './config/parseConfig.mjs'
+import config from './config/default.mjs'
 import { initWhiteboardCollab } from './collab/whiteboardCollab.mjs'
 
 const courseSchema = fs.readFileSync('./graphql/course.graphql', 'utf8')
@@ -35,13 +36,14 @@ const httpServer = createServer(app)
 
 const io = new Server(httpServer, {
     cors: {
-        origin: ['http://localhost:3001', 'http://localhost:3000'],
+        origin: process.env.CORS_ORIGIN.split(','),
         methods: ['GET', 'POST']
     }
 })
 
 initWhiteboardCollab(io)
 
-httpServer.listen(3000, () => {
-    console.log('Server running on http://localhost:3000');
+const port = config.port || 3000
+httpServer.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });

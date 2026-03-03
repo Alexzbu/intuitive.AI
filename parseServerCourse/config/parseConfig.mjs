@@ -15,10 +15,10 @@ dotenv.config()
 export default {
    databaseURI: config.mongoURI,
    cloud: './cloud/main.js',
-   appId: 'myAppId123',
-   masterKey: 'myMasterKey123',
-   serverURL: 'http://localhost:3000/parse',
-   publicServerURL: 'http://localhost:3000/parse',
+   appId: process.env.APP_ID,
+   masterKey: process.env.MASTER_KEY,
+   serverURL: process.env.SERVER_URL,
+   publicServerURL: process.env.PUBLIC_SERVER_URL,
    logLevel: "error",
    encodeParseObjectInCloudFunction: true,
    fileUpload: {

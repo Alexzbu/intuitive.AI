@@ -20,7 +20,7 @@ export function useWhiteboardCollab(roomId) {
         const stored = localStorage.getItem("user");
         const user = stored ? JSON.parse(stored) : {};
 
-        const socket = io("http://localhost:3000", {
+        const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
             auth: {
                 userId: user.objectId,
                 position: user.position,

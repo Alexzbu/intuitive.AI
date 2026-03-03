@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink, ApolloLink } from "@apollo/client"
 
 const httpLink = new HttpLink({
-   uri: "http://localhost:3000/graphql",
+   uri: process.env.NEXT_PUBLIC_API_URL,
 });
 
 const authLink = new ApolloLink((operation, forward) => {
@@ -11,8 +11,8 @@ const authLink = new ApolloLink((operation, forward) => {
       headers: {
          //  Authorization: token ? `Bearer ${token}` : "",
          "Content-Type": "application/json",
-         "X-Parse-Application-Id": "myAppId123",
-         "X-Parse-Master-Key": "myMasterKey123"
+         "X-Parse-Application-Id": process.env.NEXT_PUBLIC_PARSE_APP_ID,
+         "X-Parse-Master-Key": process.env.NEXT_PUBLIC_PARSE_MASTER_KEY
       },
    });
 
