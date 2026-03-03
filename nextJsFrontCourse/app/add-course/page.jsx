@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { gql, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
 import { useRouter, useSearchParams } from "next/navigation"
+import Loading from '@/components/Loading'
 import Chatbot from '@/components/openAI'
 import { toast } from 'react-hot-toast'
 
@@ -33,7 +34,7 @@ const GET_AI_ASSISTENT_HISTORY = gql`
             }
             `
 
-const AddCourse = () => {
+const AddCourseContent = () => {
    const router = useRouter()
    const searchParams = useSearchParams()
    const noAI = searchParams.get('noai') === 'true'
@@ -194,13 +195,13 @@ const AddCourse = () => {
          <h1 className="title">Add new course</h1>
          <div className="form">
             {!noAI && (
-            <Chatbot setTitle={setTitle} setSubtitle={setSubtitle} setObjective={setObjective}
-               setTarget_group={setTarget_group} setRecommendation={setRecommendation}
-               setKey_words={setKey_words} setDescription={setDescription} setShowAI={setShowAI}
-               questionsHistory={questionsHistory} setQuestionsHistory={setQuestionsHistory}
-               resObjectsHistory={resObjectsHistory} setresObjectsHistory={setresObjectsHistory}
-               showAI={showAI} inputId={inputId} />
-         )}
+               <Chatbot setTitle={setTitle} setSubtitle={setSubtitle} setObjective={setObjective}
+                  setTarget_group={setTarget_group} setRecommendation={setRecommendation}
+                  setKey_words={setKey_words} setDescription={setDescription} setShowAI={setShowAI}
+                  questionsHistory={questionsHistory} setQuestionsHistory={setQuestionsHistory}
+                  resObjectsHistory={resObjectsHistory} setresObjectsHistory={setresObjectsHistory}
+                  showAI={showAI} inputId={inputId} />
+            )}
 
             <label className="form__label" htmlFor="title">Name of the course:</label>
             <div className='form_input-box'>
@@ -343,4 +344,9 @@ const AddCourse = () => {
    );
 };
 
+const AddCourse = () => (
+   <Suspense fallback={<Loading />}>
+      <AddCourseContent />
+   </Suspense>
+)
 export default AddCourse

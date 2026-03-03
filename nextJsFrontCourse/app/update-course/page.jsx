@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { gql, useMutation, useQuery } from "@apollo/client"
 import client from '@/utils/apolloClient'
 import { useRouter, useSearchParams } from "next/navigation"
+import Loading from '@/components/Loading'
 
 const GET_COURSE_QUERY = gql`
          query getCourse($id: ID!) {
@@ -29,7 +30,7 @@ const UP_COURSE_MUTATION = gql`
                }
             }`
 
-const UpdateCourse = () => {
+const UpdateCourseContent = () => {
    const router = useRouter()
    const [title, setTitle] = useState('')
    const [subtitle, setSubtitle] = useState('')
@@ -144,4 +145,9 @@ const UpdateCourse = () => {
    );
 };
 
+const UpdateCourse = () => (
+   <Suspense fallback={<Loading />}>
+      <UpdateCourseContent />
+   </Suspense>
+)
 export default UpdateCourse

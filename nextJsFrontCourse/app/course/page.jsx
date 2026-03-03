@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { gql, useQuery } from "@apollo/client"
 import client from "@/utils/apolloClient"
 import Video from "@/components/show-questions/video"
 import PDF from "@/components/show-questions/pdf-file"
 import Quiz from "@/components/show-questions/quiz"
-import { Center, Link } from "@chakra-ui/react"
+import { Center, Link, Spinner } from "@chakra-ui/react"
 
 const GET_COURSE_QUERY = gql`
    query getCourse($id: ID!) {
@@ -36,7 +36,7 @@ const GET_COURSE_QUERY = gql`
       }
    }`
 
-const Course = () => {
+const CourseContent = () => {
    const searchParams = useSearchParams()
    const courseId = searchParams.get("id")
    const [questionId, setQuestionId] = useState('')
@@ -142,4 +142,9 @@ const Course = () => {
    )
 }
 
+const Course = () => {
+   <Suspense fallback={<Center><Spinner size="xl" /></Center>}>
+      <CourseContent />
+   </Suspense>
+}
 export default Course

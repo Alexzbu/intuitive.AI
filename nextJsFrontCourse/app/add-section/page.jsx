@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { gql, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
 import { useRouter, useSearchParams } from "next/navigation"
 import AddQuestions from '@/components/add-questions/add-questions'
+import Loading from '@/components/Loading'
 
 const ADD_SECTION_MUTATION = gql`
             mutation AddSection($course_id: ID!, $name: String!) {
@@ -14,7 +15,7 @@ const ADD_SECTION_MUTATION = gql`
                }
             }`
 
-const AddSection = () => {
+const AddSectionContent = () => {
    const router = useRouter()
    const searchParams = useSearchParams();
    const courseId = searchParams.get("id")
@@ -69,4 +70,9 @@ const AddSection = () => {
    );
 };
 
+const AddSection = () => (
+   <Suspense fallback={<Loading />}>
+      <AddSectionContent />
+   </Suspense>
+)
 export default AddSection
