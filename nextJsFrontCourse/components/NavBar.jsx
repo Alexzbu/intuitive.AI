@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
+import { ChatModal } from "@/features/chat/components/ChatModal"
 
 const Navbar = () => {
    const router = useRouter()
    const pathname = usePathname()
    const [user, setUser] = useState(null)
+   const [chatOpen, setChatOpen] = useState(false)
 
    useEffect(() => {
       try {
@@ -24,7 +26,7 @@ const Navbar = () => {
          <nav className="nav">
             <Link href="/#courses-section" className="nav__link">Courses</Link>
             <Link href="/whiteboard" className="nav__link">Whiteboard</Link>
-            <Link href="#faqs" className="nav__link">FAQs</Link>
+            <button className="nav__link" onClick={() => setChatOpen(true)}>Chat</button>
          </nav>
          <div className="auth">
             {user ? (
@@ -43,6 +45,7 @@ const Navbar = () => {
                </>
             )}
          </div>
+         <ChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
       </header>
    )
 }

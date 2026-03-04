@@ -7,6 +7,7 @@ import fs from 'fs'
 import parseConfig from './config/parseConfig.mjs'
 import config from './config/default.mjs'
 import { initWhiteboardCollab } from './collab/whiteboardCollab.mjs'
+import { initChatCollab } from './collab/chatCollab.mjs'
 
 const courseSchema = fs.readFileSync('./graphql/course.graphql', 'utf8')
 const authSchema   = fs.readFileSync('./graphql/auth.graphql',   'utf8')
@@ -42,6 +43,7 @@ const io = new Server(httpServer, {
 })
 
 initWhiteboardCollab(io)
+initChatCollab(io)
 
 const port = config.port || 3000
 httpServer.listen(port, () => {
