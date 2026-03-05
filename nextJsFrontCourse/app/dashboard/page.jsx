@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { gql, useQuery, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
 import Loading from '@/components/Loading'
 import { toast } from 'react-hot-toast'
+import { CourseCard } from '@/features/course-card'
 
 const GET_COURSES_QUERY = gql`
             query getCourses($limit: Int, $page: Int) {
@@ -16,6 +16,7 @@ const GET_COURSES_QUERY = gql`
                         objectId
                         name
                         description
+                        thumbnail
                         sections{
                           count
                         }
@@ -31,6 +32,7 @@ const GET_TRAINER_COURSES_QUERY = gql`
                         objectId
                         name
                         description
+                        thumbnail
                         sections{
                           count
                         }
@@ -47,7 +49,6 @@ const DEL_COURSE_MUTATION = gql`
             }`
 
 export default function Dashboard() {
-  const router = useRouter()
   const limit = 6
   const [page, setPage] = useState(0)
   const [allCourses, setAllCourses] = useState([])
@@ -151,27 +152,14 @@ export default function Dashboard() {
 
         <div className="course-list">
           {allCourses.map((course) => (
-            <div className="course-card" key={course.objectId}>
-              <Link className="course-card__link" href={`/course-details?id=${course.objectId}`}>
-                <h3 className="course-card__title">{course.name}</h3>
-                <p className="course-card__description">{course.description}</p>
-                <p className="course-card__meta">Sections: {course.sections.count}</p>
-              </Link>
-              <div className="course-card__actions">
-                <button
-                  className="course-card__btn course-card__btn--delete"
-                  onClick={() => deleteItem(course.objectId)}
-                  disabled={delLoading}>
-                  Delete
-                </button>
-                <button
-                  className="course-card__btn course-card__btn--edit"
-                  onClick={() => router.push(`/update-course?id=${course.objectId}`)}
-                >
-                  Edit
-                </button>
-              </div>
-            </div>
+            <CourseCard
+              key={course.objectId}
+              course={course}
+              variant="dashboard"
+              isCreator={isTrainer}
+              onDelete={deleteItem}
+              delLoading={delLoading}
+            />
           ))}
         </div>
 

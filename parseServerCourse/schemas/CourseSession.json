@@ -1,0 +1,35 @@
+{
+   "className": "CourseSession",
+   "fields": {
+      "course": {
+         "type": "Pointer",
+         "targetClass": "Course"
+      },
+      "start_date": {
+         "type": "String"
+      },
+      "end_date": {
+         "type": "String"
+      },
+      "schedule": {
+         "type": "String"
+      },
+      "spots_available": {
+         "type": "Number"
+      },
+      "max_spots": {
+         "type": "Number"
+      },
+      "is_active": {
+         "type": "Boolean"
+      }
+   },
+   "classLevelPermissions": {
+      "find": { "*": true },
+      "count": { "*": true },
+      "get": { "*": true },
+      "update": { "*": true },
+      "create": { "*": true },
+      "delete": { "*": true }
+   }
+}

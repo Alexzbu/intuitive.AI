@@ -72,7 +72,8 @@ Parse.Cloud.define('getCoursesByCreator', async (req) => {
 Parse.Cloud.define("upCourse", async (req) => {
    const { id, name, subtitle, objective, target_group, entry_requirements, self_assessment, target_profile,
       participants_number, recommendation, trainer_skills, qualifications, description, categories,
-      technology, language, key_words, isFree, price } = req.params
+      technology, language, key_words, isFree, price,
+      thumbnail, duration_hours, location, contents, registration_deadline, what_you_learn, further_information } = req.params
 
    if (!id) {
       throw new Error("Course ID is required.")
@@ -103,6 +104,13 @@ Parse.Cloud.define("upCourse", async (req) => {
       course.set('key_words', key_words)
       course.set('isFree', isFree)
       course.set('price', price)
+      course.set('thumbnail', thumbnail)
+      course.set('duration_hours', duration_hours)
+      course.set('location', location)
+      course.set('contents', contents)
+      course.set('registration_deadline', registration_deadline)
+      course.set('what_you_learn', what_you_learn)
+      course.set('further_information', further_information)
 
       const updatedCourse = await course.save()
       return updatedCourse.toJSON()

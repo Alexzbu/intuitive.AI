@@ -1,4 +1,5 @@
 import './course.js'
+import './courseSession.js'
 import './section.js'
 import './question.js'
 import './quiz_question.js'

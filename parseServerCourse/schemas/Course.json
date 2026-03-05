@@ -57,6 +57,27 @@
       "price": {
          "type": "String"
       },
+      "thumbnail": {
+         "type": "String"
+      },
+      "duration_hours": {
+         "type": "String"
+      },
+      "location": {
+         "type": "String"
+      },
+      "contents": {
+         "type": "String"
+      },
+      "registration_deadline": {
+         "type": "String"
+      },
+      "what_you_learn": {
+         "type": "Array"
+      },
+      "further_information": {
+         "type": "String"
+      },
       "sections": {
          "type": "Relation",
          "targetClass": "Section"
