@@ -2,15 +2,16 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from "next/link"
-import { gql, useQuery, useMutation } from "@apollo/client"
+import { gql, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
 import Loading from '@/components/Loading'
 import { toast } from 'react-hot-toast'
 import { CourseCard } from '@/features/course-card'
 
-const GET_COURSES_QUERY = gql`
-            query getCourses($limit: Int, $page: Int) {
-                    getCourses(limit: $limit, page: $page) {
+
+const GET_TRAINER_COURSES_QUERY = gql`
+            query getCoursesByCreator($creatorId: ID!, $limit: Int, $page: Int) {
+                    getCoursesByCreator(creatorId: $creatorId, limit: $limit, page: $page) {
                       totalCourses
                       courses{
                         objectId
@@ -24,9 +25,9 @@ const GET_COURSES_QUERY = gql`
                     }
               }`
 
-const GET_TRAINER_COURSES_QUERY = gql`
-            query getCoursesByCreator($creatorId: ID!, $limit: Int, $page: Int) {
-                    getCoursesByCreator(creatorId: $creatorId, limit: $limit, page: $page) {
+const GET_STUDENT_COURSES_QUERY = gql`
+            query getCoursesByParticipant($userId: ID!, $limit: Int, $page: Int) {
+                    getCoursesByParticipant(userId: $userId, limit: $limit, page: $page) {
                       totalCourses
                       courses{
                         objectId
@@ -53,55 +54,51 @@ export default function Dashboard() {
   const [page, setPage] = useState(0)
   const [allCourses, setAllCourses] = useState([])
   const [hasMore, setHasMore] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
-  const [del, setDel] = useState(false)
   const observerTarget = useRef(null)
   const [user, setUser] = useState(null)
-  const [userLoaded, setUserLoaded] = useState(false)
 
   useEffect(() => {
     try {
       const stored = localStorage.getItem('user')
       if (stored) setUser(JSON.parse(stored))
     } catch {}
-    setUserLoaded(true)
   }, [])
 
   const isTrainer = user?.position === 'trainer'
-  const activeQuery = isTrainer ? GET_TRAINER_COURSES_QUERY : GET_COURSES_QUERY
-  const queryVariables = isTrainer
-    ? { creatorId: user.objectId, limit, page }
-    : { limit, page }
 
-  const { data, loading, refetch } = useQuery(activeQuery, {
-    client,
-    variables: queryVariables,
-    skip: !userLoaded,
-  })
+  useEffect(() => {
+    if (!user?.objectId) return
+
+    const query = isTrainer ? GET_TRAINER_COURSES_QUERY : GET_STUDENT_COURSES_QUERY
+    const variables = isTrainer
+      ? { creatorId: user.objectId, limit, page }
+      : { userId: user.objectId, limit, page }
+
+    if (page === 0) setLoading(true)
+
+    client.query({ query, variables, fetchPolicy: 'network-only' })
+      .then(({ data }) => {
+        const coursesData = data?.getCoursesByCreator ?? data?.getCoursesByParticipant
+        if (coursesData?.courses) {
+          if (page === 0) {
+            setAllCourses(coursesData.courses)
+          } else {
+            setAllCourses(prev => [...prev, ...coursesData.courses])
+          }
+          const totalPages = Math.ceil(coursesData.totalCourses / limit)
+          setHasMore(page < totalPages - 1)
+        }
+      })
+      .catch(err => console.error(err))
+      .finally(() => {
+        setLoading(false)
+        setLoadingMore(false)
+      })
+  }, [user, page])
+
   const [delCourse, { loading: delLoading }] = useMutation(DEL_COURSE_MUTATION, { client })
-
-  useEffect(() => {
-    const coursesData = data?.getCoursesByCreator ?? data?.getCourses
-    if (coursesData?.courses) {
-      if (page === 0) {
-        setAllCourses(coursesData.courses)
-      } else {
-        setAllCourses(prev => [...prev, ...coursesData.courses])
-      }
-      setLoadingMore(false)
-
-      const totalPages = Math.ceil(coursesData.totalCourses / limit)
-      setHasMore(page < totalPages - 1)
-    }
-  }, [data, page])
-
-  useEffect(() => {
-    if (del) {
-      setDel(false)
-      setPage(0)
-      refetch()
-    }
-  }, [del, refetch])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -128,11 +125,10 @@ export default function Dashboard() {
   const deleteItem = async (id) => {
     const toastId = toast.loading("Removing...")
     try {
-      await delCourse({
-        variables: { id },
-      })
+      await delCourse({ variables: { id } })
       toast.success("Removed successfully!", { id: toastId })
-      setDel(true)
+      setPage(0)
+      setAllCourses([])
     } catch (error) {
       console.error('Error deleting data:', error)
     }
@@ -142,7 +138,7 @@ export default function Dashboard() {
     <section className="courses-section">
       <div className="container">
         <div className="dashboard__header">
-          <h2 className="section-title">{isTrainer ? 'My Courses' : 'All Courses'}</h2>
+          <h2 className="section-title">My Courses</h2>
           {isTrainer && (
             <Link className="btn-primary" href="/create-course">Create Course</Link>
           )}

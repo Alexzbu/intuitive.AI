@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@apollo/client"
+import { gql, useMutation, useQuery } from "@apollo/client"
 import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "react-hot-toast"
 import client from "@/utils/apolloClient"
@@ -14,10 +14,34 @@ import {
    GET_AI_ASSISTENT_HISTORY,
 } from "../api/courseMutations"
 
+const GET_SESSIONS_QUERY = gql`
+   query getCourseSessionsByCourse($courseId: ID!) {
+      getCourseSessionsByCourse(courseId: $courseId) {
+         objectId start_date end_date schedule spots_available max_spots is_active
+      }
+   }`
+
+const ADD_SESSION_MUTATION = gql`
+   mutation addCourseSession($courseId: ID!, $start_date: String, $end_date: String, $schedule: String, $spots_available: Int, $max_spots: Int) {
+      addCourseSession(courseId: $courseId, start_date: $start_date, end_date: $end_date, schedule: $schedule, spots_available: $spots_available, max_spots: $max_spots) {
+         objectId
+      }
+   }`
+
+const DEL_SESSION_MUTATION = gql`
+   mutation delCourseSession($id: ID!) {
+      delCourseSession(id: $id) { objectId }
+   }`
+
 export function useAddCourse() {
    const router = useRouter()
    const searchParams = useSearchParams()
    const noAI = searchParams.get("noai") === "true"
+
+   const [createdCourseId, setCreatedCourseId] = useState(null)
+   const [newSession, setNewSession] = useState({
+      start_date: "", end_date: "", schedule: "", spots_available: "", max_spots: "",
+   })
 
    const [user] = useState(() => {
       if (typeof window === "undefined") return null
@@ -50,6 +74,7 @@ export function useAddCourse() {
       register,
       handleSubmit,
       setValue,
+      watch,
       control,
       formState: { errors, isSubmitting },
    } = useForm({
@@ -90,6 +115,14 @@ export function useAddCourse() {
    const [addCourse] = useMutation(ADD_COURSE_MUTATION, { client })
    const [addAiAssistentHistory] = useMutation(ADD_AI_ASSISTENT_HISTORY, { client })
    const [fetchHistoryMutation] = useMutation(GET_AI_ASSISTENT_HISTORY, { client })
+   const [addCourseSession, { loading: addingSession }] = useMutation(ADD_SESSION_MUTATION, { client })
+   const [delCourseSession] = useMutation(DEL_SESSION_MUTATION, { client })
+
+   const { data: sessionsData, refetch: refetchSessions } = useQuery(GET_SESSIONS_QUERY, {
+      client,
+      variables: { courseId: createdCourseId },
+      skip: !createdCourseId,
+   })
 
    // Fetch AI history when search changes
    useEffect(() => {
@@ -201,13 +234,73 @@ export function useAddCourse() {
          })
 
          if (data.addCourse.objectId) {
-            router.push(`/add-section?id=${data.addCourse.objectId}`)
+            setCreatedCourseId(data.addCourse.objectId)
          }
       } catch (error) {
          toast.error("Failed to save!", { id: toastId })
          console.error("Error adding course:", error)
       }
    }
+
+   const handleAddSession = async () => {
+      if (!createdCourseId) return
+      try {
+         await addCourseSession({
+            variables: {
+               courseId: createdCourseId,
+               start_date: newSession.start_date,
+               end_date: newSession.end_date,
+               schedule: newSession.schedule,
+               spots_available: newSession.spots_available ? parseInt(newSession.spots_available) : null,
+               max_spots: newSession.max_spots ? parseInt(newSession.max_spots) : null,
+            }
+         })
+         setNewSession({ start_date: "", end_date: "", schedule: "", spots_available: "", max_spots: "" })
+         refetchSessions()
+      } catch (err) {
+         console.error("Failed to add session:", err)
+      }
+   }
+
+   const handleDeleteSession = async (id) => {
+      try {
+         await delCourseSession({ variables: { id } })
+         refetchSessions()
+      } catch (err) {
+         console.error("Failed to delete session:", err)
+      }
+   }
+
+   // Controlled interface for CourseFormFields
+   const watchedValues = watch()
+   const fields = {
+      name: watchedValues.name,
+      subtitle: watchedValues.subtitle,
+      objective: watchedValues.objective,
+      target_group: watchedValues.target_group,
+      description: watchedValues.description,
+      recommendation: watchedValues.recommendation,
+      key_words: watchedValues.key_words?.[0] ?? "",
+      contents: watchedValues.contents,
+      duration_hours: watchedValues.duration_hours,
+      location: watchedValues.location,
+      price: watchedValues.price,
+      registration_deadline: watchedValues.registration_deadline,
+      further_information: watchedValues.further_information,
+   }
+
+   const handleChange = (fieldName, value) => {
+      if (fieldName === "key_words") {
+         setValue("key_words", [value])
+      } else {
+         setValue(fieldName, value)
+      }
+   }
+
+   const learnItems = (watchedValues.what_you_learn ?? []).map(item => item?.value ?? "")
+   const onLearnAdd = () => appendLearn({ value: "" })
+   const onLearnUpdate = (i, val) => setValue(`what_you_learn.${i}.value`, val)
+   const onLearnRemove = (i) => removeLearn(i)
 
    return {
       // Form
@@ -218,7 +311,14 @@ export function useAddCourse() {
       errors,
       isSubmitting,
       onSubmit,
-      // what_you_learn field array
+      // Controlled interface for CourseFormFields
+      fields,
+      handleChange,
+      learnItems,
+      onLearnAdd,
+      onLearnUpdate,
+      onLearnRemove,
+      // what_you_learn field array (legacy, still used internally)
       learnFields,
       appendLearn,
       removeLearn,
@@ -251,5 +351,14 @@ export function useAddCourse() {
       historyResults,
       showHistoryResults,
       fillFromHistory,
+      // Post-creation session management
+      router,
+      createdCourseId,
+      sessions: sessionsData?.getCourseSessionsByCourse ?? [],
+      newSession,
+      setNewSession,
+      addingSession,
+      handleAddSession,
+      handleDeleteSession,
    }
 }

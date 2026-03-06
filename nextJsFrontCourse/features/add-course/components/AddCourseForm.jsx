@@ -1,276 +1,253 @@
 import {
-   Box, Flex, Grid, Heading, Input, Textarea, Button, Text, Field, Stack
+   Box, Flex, Heading, Input, Button, Text, Stack, Field
 } from "@chakra-ui/react"
-import { Sparkles, Upload, Trash2, ChevronRight } from "lucide-react"
+import { Sparkles, ChevronRight, Plus, Trash2 } from "lucide-react"
 import Chatbot from "@/components/openAI"
-import { DynamicList } from "./DynamicList"
+import { CourseFormFields } from "@/features/course-form/CourseFormFields"
 
-const SectionCard = ({ title, children }) => (
-   <Box bg="white" border="1px solid" borderColor="gray.200" borderRadius="md" p="6" mb="5">
-      {title && (
-         <Heading size="sm" color="gray.500" mb="4">{title}</Heading>
-      )}
-      {children}
-   </Box>
-)
-
-const AiFieldRow = ({ label, children, onAI, noAI }) => (
-   <Field.Root mb="4">
-      <Field.Label fontWeight="medium" fontSize="sm">{label}</Field.Label>
-      <Flex gap="2" align="flex-start">
-         <Box flex="1">{children}</Box>
-         {!noAI && (
-            <Button
-               size="sm"
-               variant="outline"
-               colorPalette="purple"
-               flexShrink={0}
-               mt="0.5"
-               onClick={onAI}
-               aria-label="AI assist"
-            >
-               <Sparkles size={13} />
-               AI
-            </Button>
-         )}
-      </Flex>
-   </Field.Root>
+const AiButton = ({ onClick }) => (
+   <Button
+      size="sm"
+      variant="outline"
+      colorPalette="purple"
+      flexShrink={0}
+      mt="0.5"
+      onClick={onClick}
+      aria-label="AI assist"
+   >
+      <Sparkles size={13} />
+      AI
+   </Button>
 )
 
 export function AddCourseForm({
-   register, handleSubmit, errors, isSubmitting, onSubmit,
-   learnFields, appendLearn, removeLearn,
+   handleSubmit, errors, isSubmitting, onSubmit,
+   fields, handleChange,
+   learnItems, onLearnAdd, onLearnUpdate, onLearnRemove,
    thumbnail, thumbnailUploading, handleThumbnailUpload, handleThumbnailUrlChange, clearThumbnail,
    noAI, showAI, setShowAI, inputId, setInputId,
    setTitle, setSubtitle, setObjective, setTarget_group, setRecommendation, setKey_words, setDescription,
    questionsHistory, setQuestionsHistory, resObjectsHistory, setresObjectsHistory,
    search, setSearch, historyResults, showHistoryResults, fillFromHistory,
+   router, createdCourseId, sessions, newSession, setNewSession, addingSession, handleAddSession, handleDeleteSession,
 }) {
    const openAI = (id) => { setShowAI(true); setInputId(id) }
 
    return (
       <Box maxW="820px" mx="auto" px="6" py="8">
-         {/* AI Chatbot Panel */}
-         {!noAI && (
-            <Chatbot
-               setTitle={setTitle}
-               setSubtitle={setSubtitle}
-               setObjective={setObjective}
-               setTarget_group={setTarget_group}
-               setRecommendation={setRecommendation}
-               setKey_words={setKey_words}
-               setDescription={setDescription}
-               showAI={showAI}
-               setShowAI={setShowAI}
-               questionsHistory={questionsHistory}
-               setQuestionsHistory={setQuestionsHistory}
-               resObjectsHistory={resObjectsHistory}
-               setresObjectsHistory={setresObjectsHistory}
-               inputId={inputId}
-            />
-         )}
-
-         <Heading size="lg" mb="6">Add New Course</Heading>
-
-         {/* AI history search */}
-         {!noAI && (
-            <Box position="relative" mb="6">
-               <Input
-                  placeholder="Find previous AI suggestions..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  bg="white"
-               />
-               {showHistoryResults && (
-                  <Box
-                     position="absolute"
-                     top="100%"
-                     left="0"
-                     right="0"
-                     bg="white"
-                     border="1px solid"
-                     borderColor="gray.200"
-                     borderRadius="md"
-                     shadow="md"
-                     zIndex="10"
-                     maxH="200px"
-                     overflowY="auto"
-                  >
-                     {historyResults.map((item, i) => (
-                        <Box
-                           key={item.objectId}
-                           px="4"
-                           py="3"
-                           cursor="pointer"
-                           fontSize="sm"
-                           _hover={{ bg: "gray.50" }}
-                           borderBottom="1px solid"
-                           borderColor="gray.100"
-                           onClick={() => fillFromHistory(i)}
-                        >
-                           {item.request}
-                        </Box>
-                     ))}
-                  </Box>
-               )}
-            </Box>
-         )}
-
-         <Box as="form" onSubmit={handleSubmit(onSubmit)}>
-            {/* Basic Information */}
-            <SectionCard title="Basic Information">
-               <AiFieldRow label="Course Name *" onAI={() => openAI("title")} noAI={noAI}>
-                  <Input {...register("name")} placeholder="e.g. Data Analyst (IHK)" />
-                  {errors.name && <Text fontSize="xs" color="red.500" mt="1">{errors.name.message}</Text>}
-               </AiFieldRow>
-
-               <AiFieldRow label="Subtitle" onAI={() => openAI("subtitle")} noAI={noAI}>
-                  <Input {...register("subtitle")} placeholder="Short tagline" />
-               </AiFieldRow>
-
-               <AiFieldRow label="Objective" onAI={() => openAI("objective")} noAI={noAI}>
-                  <Input {...register("objective")} placeholder="Main learning goal" />
-               </AiFieldRow>
-
-               <AiFieldRow label="Target Group" onAI={() => openAI("target_group")} noAI={noAI}>
-                  <Input {...register("target_group")} placeholder="Who is this course for?" />
-               </AiFieldRow>
-
-               <AiFieldRow label="Keywords" onAI={() => openAI("key_words")} noAI={noAI}>
-                  <Input {...register("key_words.0")} placeholder="e.g. data, analytics, python" />
-               </AiFieldRow>
-            </SectionCard>
-
-            {/* Course Content */}
-            <SectionCard title="Course Content">
-               <AiFieldRow label="Description" onAI={() => openAI("description")} noAI={noAI}>
-                  <Textarea {...register("description")} rows={4} placeholder="Describe the course..." />
-               </AiFieldRow>
-
-               <Field.Root mb="0">
-                  <Field.Label fontWeight="medium" fontSize="sm">Contents Overview</Field.Label>
-                  <Textarea
-                     {...register("contents")}
-                     rows={3}
-                     placeholder="Modules, structure, what's included..."
+         {!createdCourseId ? (
+            <>
+               {/* AI Chatbot Panel */}
+               {!noAI && (
+                  <Chatbot
+                     setTitle={setTitle}
+                     setSubtitle={setSubtitle}
+                     setObjective={setObjective}
+                     setTarget_group={setTarget_group}
+                     setRecommendation={setRecommendation}
+                     setKey_words={setKey_words}
+                     setDescription={setDescription}
+                     showAI={showAI}
+                     setShowAI={setShowAI}
+                     questionsHistory={questionsHistory}
+                     setQuestionsHistory={setQuestionsHistory}
+                     resObjectsHistory={resObjectsHistory}
+                     setresObjectsHistory={setresObjectsHistory}
+                     inputId={inputId}
                   />
-               </Field.Root>
-            </SectionCard>
+               )}
 
-            {/* Course Details */}
-            <SectionCard title="Course Details">
-               <Grid templateColumns={{ base: "1fr", sm: "1fr 1fr" }} gap="4" mb="4">
-                  <Field.Root>
-                     <Field.Label fontSize="sm">Duration</Field.Label>
-                     <Input {...register("duration_hours")} placeholder="e.g. 83 hours" />
-                  </Field.Root>
-                  <Field.Root>
-                     <Field.Label fontSize="sm">Location</Field.Label>
-                     <Input {...register("location")} placeholder="Virtual" />
-                  </Field.Root>
-                  <Field.Root>
-                     <Field.Label fontSize="sm">Price</Field.Label>
-                     <Input {...register("price")} placeholder="e.g. 2.390,00 €" />
-                  </Field.Root>
-                  <Field.Root>
-                     <Field.Label fontSize="sm">Registration Deadline</Field.Label>
-                     <Input {...register("registration_deadline")} placeholder="e.g. 18. Jan. 2026" />
-                  </Field.Root>
-               </Grid>
+               <Heading size="lg" mb="6">Add New Course</Heading>
 
-               <AiFieldRow label="Technical Requirements / Recommendation" onAI={() => openAI("recommendation")} noAI={noAI}>
-                  <Textarea {...register("recommendation")} rows={3} placeholder="PC, internet connection..." />
-               </AiFieldRow>
-            </SectionCard>
-
-            {/* Thumbnail */}
-            <SectionCard title="Course Thumbnail">
-               {thumbnail && (
-                  <Box mb="3">
-                     <Box
-                        as="img"
-                        src={thumbnail}
-                        alt="Thumbnail preview"
-                        maxH="160px"
-                        borderRadius="md"
-                        objectFit="cover"
+               {/* AI history search */}
+               {!noAI && (
+                  <Box position="relative" mb="6">
+                     <Input
+                        placeholder="Find previous AI suggestions..."
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        bg="white"
                      />
+                     {showHistoryResults && (
+                        <Box
+                           position="absolute"
+                           top="100%"
+                           left="0"
+                           right="0"
+                           bg="white"
+                           border="1px solid"
+                           borderColor="gray.200"
+                           borderRadius="md"
+                           shadow="md"
+                           zIndex="10"
+                           maxH="200px"
+                           overflowY="auto"
+                        >
+                           {historyResults.map((item, i) => (
+                              <Box
+                                 key={item.objectId}
+                                 px="4"
+                                 py="3"
+                                 cursor="pointer"
+                                 fontSize="sm"
+                                 _hover={{ bg: "gray.50" }}
+                                 borderBottom="1px solid"
+                                 borderColor="gray.100"
+                                 onClick={() => fillFromHistory(i)}
+                              >
+                                 {item.request}
+                              </Box>
+                           ))}
+                        </Box>
+                     )}
                   </Box>
                )}
-               <Flex align="center" gap="3" mb="3">
-                  <Button
-                     as="label"
-                     htmlFor="thumbnail-upload"
-                     variant="outline"
-                     size="sm"
-                     cursor="pointer"
-                     loading={thumbnailUploading}
-                     loadingText="Uploading..."
-                  >
-                     <Upload size={14} />
-                     {thumbnail ? "Replace Image" : "Upload Image"}
-                  </Button>
-                  <input
-                     id="thumbnail-upload"
-                     type="file"
-                     accept="image/*"
-                     style={{ display: "none" }}
-                     onChange={handleThumbnailUpload}
+
+               <Box as="form" onSubmit={handleSubmit(onSubmit)}>
+                  <CourseFormFields
+                     fields={fields}
+                     onChange={handleChange}
+                     nameError={errors.name?.message}
+                     thumbnail={thumbnail}
+                     thumbnailUploading={thumbnailUploading}
+                     onThumbnailUpload={handleThumbnailUpload}
+                     onThumbnailUrlChange={handleThumbnailUrlChange}
+                     clearThumbnail={clearThumbnail}
+                     learnItems={learnItems}
+                     onLearnAdd={onLearnAdd}
+                     onLearnUpdate={onLearnUpdate}
+                     onLearnRemove={onLearnRemove}
+                     showKeywords
+                     renderFieldAction={noAI ? undefined : (name) => {
+                        const aiMap = {
+                           name: "title",
+                           subtitle: "subtitle",
+                           objective: "objective",
+                           target_group: "target_group",
+                           key_words: "key_words",
+                           description: "description",
+                           recommendation: "recommendation",
+                        }
+                        return aiMap[name] ? <AiButton onClick={() => openAI(aiMap[name])} /> : null
+                     }}
                   />
-                  {thumbnail && (
-                     <Button variant="ghost" size="sm" color="red.500" onClick={clearThumbnail}>
-                        <Trash2 size={14} />
-                        Remove
+
+                  <Flex justify="flex-end">
+                     <Button
+                        type="submit"
+                        colorPalette="blue"
+                        size="lg"
+                        loading={isSubmitting}
+                        loadingText="Saving..."
+                        minW="160px"
+                     >
+                        Add Course
+                        <ChevronRight size={16} />
                      </Button>
+                  </Flex>
+               </Box>
+            </>
+         ) : (
+            <>
+               <Box bg="green.50" border="1px solid" borderColor="green.200" borderRadius="md" p="4" mb="6">
+                  <Text fontWeight="semibold" color="green.700">Course created! Now add sessions below, or skip and continue.</Text>
+               </Box>
+
+               {/* Sessions */}
+               <Box bg="white" borderRadius="md" border="1px solid" borderColor="gray.200" p="6" mb="6">
+                  <Heading size="sm" mb="4" color="gray.600">Course Sessions</Heading>
+
+                  {sessions.length > 0 && (
+                     <Stack gap="2" mb="4">
+                        {sessions.map(s => (
+                           <Flex
+                              key={s.objectId}
+                              align="center"
+                              justify="space-between"
+                              p="3"
+                              border="1px solid"
+                              borderColor="gray.200"
+                              borderRadius="md"
+                              bg="gray.50"
+                           >
+                              <Box>
+                                 <Text fontSize="sm" fontWeight="medium">{s.start_date} – {s.end_date}</Text>
+                                 {s.schedule && <Text fontSize="xs" color="gray.500">{s.schedule}</Text>}
+                                 {s.spots_available != null && (
+                                    <Text fontSize="xs" color="teal.600">{s.spots_available} spots available</Text>
+                                 )}
+                              </Box>
+                              <Button size="xs" variant="ghost" color="red.500" onClick={() => handleDeleteSession(s.objectId)}>
+                                 <Trash2 size={14} />
+                              </Button>
+                           </Flex>
+                        ))}
+                     </Stack>
                   )}
+
+                  <Box border="1px dashed" borderColor="gray.300" borderRadius="md" p="4">
+                     <Text fontSize="sm" fontWeight="medium" mb="3" color="gray.600">Add New Session</Text>
+                     <Flex gap="3" wrap="wrap" mb="3">
+                        <Box flex="1" minW="140px">
+                           <Field.Root>
+                              <Field.Label fontSize="xs">Start Date</Field.Label>
+                              <Input size="sm" value={newSession.start_date} onChange={e => setNewSession({ ...newSession, start_date: e.target.value })} placeholder="19.1.2026" />
+                           </Field.Root>
+                        </Box>
+                        <Box flex="1" minW="140px">
+                           <Field.Root>
+                              <Field.Label fontSize="xs">End Date</Field.Label>
+                              <Input size="sm" value={newSession.end_date} onChange={e => setNewSession({ ...newSession, end_date: e.target.value })} placeholder="18.5.2026" />
+                           </Field.Root>
+                        </Box>
+                     </Flex>
+                     <Flex gap="3" wrap="wrap" mb="3">
+                        <Box flex="2" minW="200px">
+                           <Field.Root>
+                              <Field.Label fontSize="xs">Schedule</Field.Label>
+                              <Input size="sm" value={newSession.schedule} onChange={e => setNewSession({ ...newSession, schedule: e.target.value })} placeholder="Montags, 09:00 bis 12:00 Uhr" />
+                           </Field.Root>
+                        </Box>
+                        <Box flex="1" minW="100px">
+                           <Field.Root>
+                              <Field.Label fontSize="xs">Spots Available</Field.Label>
+                              <Input size="sm" type="number" value={newSession.spots_available} onChange={e => setNewSession({ ...newSession, spots_available: e.target.value })} placeholder="20" />
+                           </Field.Root>
+                        </Box>
+                        <Box flex="1" minW="100px">
+                           <Field.Root>
+                              <Field.Label fontSize="xs">Max Spots</Field.Label>
+                              <Input size="sm" type="number" value={newSession.max_spots} onChange={e => setNewSession({ ...newSession, max_spots: e.target.value })} placeholder="20" />
+                           </Field.Root>
+                        </Box>
+                     </Flex>
+                     <Button
+                        size="sm"
+                        colorPalette="blue"
+                        onClick={handleAddSession}
+                        loading={addingSession}
+                        loadingText="Adding..."
+                        disabled={!newSession.start_date || !newSession.end_date}
+                     >
+                        <Plus size={14} />
+                        Add Session
+                     </Button>
+                  </Box>
+               </Box>
+
+               <Flex justify="flex-end">
+                  <Button
+                     colorPalette="blue"
+                     size="lg"
+                     minW="180px"
+                     onClick={() => router.push(`/add-section?id=${createdCourseId}`)}
+                  >
+                     Continue to Sections
+                     <ChevronRight size={16} />
+                  </Button>
                </Flex>
-               <Text fontSize="xs" color="gray.400" mb="1">Or paste an image URL:</Text>
-               <Input
-                  size="sm"
-                  value={thumbnail}
-                  onChange={handleThumbnailUrlChange}
-                  placeholder="https://..."
-               />
-            </SectionCard>
-
-            {/* Learning Outcomes */}
-            <SectionCard title="Learning Outcomes">
-               <Field.Root mb="4">
-                  <Field.Label fontWeight="medium" fontSize="sm">What students will learn</Field.Label>
-                  <DynamicList
-                     fields={learnFields}
-                     onAppend={appendLearn}
-                     onRemove={removeLearn}
-                     register={register}
-                     placeholder="Learning outcome"
-                  />
-               </Field.Root>
-
-               <Field.Root>
-                  <Field.Label fontWeight="medium" fontSize="sm">Further Information</Field.Label>
-                  <Textarea
-                     {...register("further_information")}
-                     rows={4}
-                     placeholder="Certificate info, requirements, etc."
-                  />
-               </Field.Root>
-            </SectionCard>
-
-            {/* Submit */}
-            <Flex justify="flex-end">
-               <Button
-                  type="submit"
-                  colorPalette="blue"
-                  size="lg"
-                  loading={isSubmitting}
-                  loadingText="Saving..."
-                  minW="160px"
-               >
-                  Add Course
-                  <ChevronRight size={16} />
-               </Button>
-            </Flex>
-         </Box>
+            </>
+         )}
       </Box>
    )
 }

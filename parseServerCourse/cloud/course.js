@@ -143,6 +143,27 @@ Parse.Cloud.define("delCourse", async (req) => {
    }
 })
 
+Parse.Cloud.define('getCoursesByParticipant', async (req) => {
+   const { userId, limit = 6, page = 0 } = req.params
+
+   if (!userId) {
+      throw new Parse.Error(Parse.Error.SCRIPT_FAILED, 'userId is required')
+   }
+
+   const userPtr = Parse.Object.extend('_User').createWithoutData(userId)
+   const query = new Parse.Query('Course')
+   query.equalTo('participants', userPtr)
+
+   try {
+      const totalCourses = await query.count({ useMasterKey: true })
+      query.limit(limit).skip(limit * page)
+      const courseList = await query.find({ useMasterKey: true })
+      return { totalCourses, courses: courseList }
+   } catch (error) {
+      return { error: `Failed to fetch courses: ${error.message}` }
+   }
+})
+
 Parse.Cloud.define('enrollInCourse', async (req) => {
    const { courseId, userId } = req.params
    const course = await new Parse.Query('Course').get(courseId, { useMasterKey: true })
