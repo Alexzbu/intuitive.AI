@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useQuery } from "@apollo/client"
 import { gql } from "@apollo/client"
 import client from '@/utils/apolloClient'
-import Loading from '@/components/Loading'
+import { Center, Spinner } from "@chakra-ui/react"
 import { CourseCard } from '@/features/course-card'
 
 const GET_COURSES_QUERY = gql`
@@ -86,7 +86,7 @@ export default function Home() {
         <div className="container">
           <h2 className="section-title">Discover Our Courses</h2>
 
-          {loading && page === 0 && <Loading />}
+          {loading && page === 0 && <Center py="20"><Spinner size="xl" color="blue.500" /></Center>}
 
           <div className="course-list">
             {allCourses.map((course) => (
@@ -102,7 +102,7 @@ export default function Home() {
 
           {hasMore && (
             <div ref={observerTarget} className="infinite-scroll-trigger">
-              {loadingMore && <Loading />}
+              {loadingMore && <Center py="20"><Spinner size="xl" color="blue.500" /></Center>}
             </div>
           )}
         </div>

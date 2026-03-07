@@ -160,4 +160,16 @@ type Mutation {
     courseTitle: String
   ): [Object] @resolve
 
+  saveEditorDoc(courseId: String!, content: String!): EditorDocument @resolve
+
+}
+
+type EditorDocument {
+  objectId: ID
+  courseId: String
+  content: String
+}
+
+extend type Query {
+  getEditorDoc(courseId: String!): EditorDocument @resolve
 }

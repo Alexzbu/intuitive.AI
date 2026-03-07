@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from "next/link"
 import { gql, useMutation } from "@apollo/client"
 import client from '@/utils/apolloClient'
-import Loading from '@/components/Loading'
+import { Center, Spinner } from '@chakra-ui/react'
 import { toast } from 'react-hot-toast'
 import { CourseCard } from '@/features/course-card'
 
@@ -63,7 +63,7 @@ export default function Dashboard() {
     try {
       const stored = localStorage.getItem('user')
       if (stored) setUser(JSON.parse(stored))
-    } catch {}
+    } catch { }
   }, [])
 
   const isTrainer = user?.position === 'trainer'
@@ -144,7 +144,7 @@ export default function Dashboard() {
           )}
         </div>
 
-        {loading && page === 0 && <Loading />}
+        {loading && page === 0 && <Center py="20"><Spinner size="xl" color="blue.500" /></Center>}
 
         <div className="course-list">
           {allCourses.map((course) => (
@@ -167,7 +167,7 @@ export default function Dashboard() {
 
         {hasMore && (
           <div ref={observerTarget} className="infinite-scroll-trigger">
-            {loadingMore && <Loading />}
+            {loadingMore && <Center py="20"><Spinner size="xl" color="blue.500" /></Center>}
           </div>
         )}
       </div>
