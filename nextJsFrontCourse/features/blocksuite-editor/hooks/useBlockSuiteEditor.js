@@ -11,11 +11,18 @@ export function useBlockSuiteEditor(courseId) {
   const containerRef = useRef(null)
   const docRef = useRef(null)
   const collectionRef = useRef(null)
+  const editorRef = useRef(null)
   const saveTimerRef = useRef(null)
 
   const [initialized, setInitialized] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [mode, setModeState] = useState("page")
+
+  const setMode = useCallback((newMode) => {
+    if (editorRef.current) editorRef.current.mode = newMode
+    setModeState(newMode)
+  }, [])
 
   const [getEditorDoc] = useLazyQuery(GET_EDITOR_DOC, { client: apolloClient })
   const [saveEditorDoc] = useMutation(SAVE_EDITOR_DOC, { client: apolloClient })
@@ -101,6 +108,7 @@ export function useBlockSuiteEditor(courseId) {
         editor = document.createElement("affine-editor-container")
         editor.doc = doc
         editor.style.cssText = "width:100%;height:100%;display:block;"
+        editorRef.current = editor
         containerRef.current.appendChild(editor)
         setInitialized(true)
       } catch (err) {
@@ -120,5 +128,5 @@ export function useBlockSuiteEditor(courseId) {
     }
   }, [courseId])
 
-  return { containerRef, save, saving, initialized, error }
+  return { containerRef, save, saving, initialized, error, mode, setMode }
 }
