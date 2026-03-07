@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react"
 import {
    ChevronLeft, PlayCircle, FileText, HelpCircle,
-   BookOpen, PenLine
+   BookOpen, PenLine, NotebookPen
 } from "lucide-react"
 
 const GET_COURSE_QUERY = gql`
@@ -91,6 +91,20 @@ const CourseContent = () => {
                   <Link href={`/whiteboard?id=${courseId}`}>
                      <PenLine size={15} />
                      Whiteboard
+                  </Link>
+               </Button>
+               <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  colorPalette="whiteAlpha"
+                  color="white"
+                  borderColor="whiteAlpha.600"
+                  _hover={{ bg: "whiteAlpha.200" }}
+               >
+                  <Link href={`/editor?courseId=${courseId}`}>
+                     <NotebookPen size={15} />
+                     Open Notes
                   </Link>
                </Button>
             </Flex>

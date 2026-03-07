@@ -21,11 +21,11 @@ const AddSectionContent = () => {
    const courseId = searchParams.get("id")
    const [title, setTitle] = useState('')
    const [sections, setSections] = useState([])
+   const [activeSection, setActiveSection] = useState(null)
    const [errors, setErrors] = useState({})
    const [addSection] = useMutation(ADD_SECTION_MUTATION, { client })
 
    const sendForm = async () => {
-
       try {
          const { data } = await addSection({
             variables: {
@@ -34,38 +34,53 @@ const AddSectionContent = () => {
             },
          })
          setTitle('')
-         setSections((prevSections) => [
-            ...prevSections,
-            { sectionId: data.addSection.objectId, sectionName: data.addSection.name },
-         ])
+         setActiveSection({ sectionId: data.addSection.objectId, sectionName: data.addSection.name })
       } catch (error) {
-         setErrors(error.response.data)
+         setErrors(error.response?.data ?? {})
          console.error('Error adding section:', error)
       }
    }
 
+   const finalizeSection = () => {
+      setSections((prev) => [...prev, activeSection])
+      setActiveSection(null)
+   }
+
    return (
       <div className="container">
-         {sections?.map((section) => (
-            <AddQuestions sectionId={section.sectionId} sectionName={section.sectionName} key={section.sectionId} />
+         {sections.map((section) => (
+            <div key={section.sectionId} className="section-done">
+               <h2 className="title">{section.sectionName} ✓</h2>
+            </div>
          ))}
-         <h1 className="title">{sections.length > 0 ? "Add another section" : "Add new section"}</h1>
-         <div className="form">
-            <label className="form__label" htmlFor="title">Name of the section:</label>
-            <input
-               className="form__input"
-               type="text"
-               id="title"
-               name="title"
-               value={title}
-               onChange={(e) => setTitle(e.target.value)}
-            />
-            {errors.title && <span className="error">{errors.title}</span>}
 
-            <button className="form__button" onClick={sendForm}>
-               Add
-            </button>
-         </div>
+         {activeSection && (
+            <>
+               <AddQuestions sectionId={activeSection.sectionId} sectionName={activeSection.sectionName} />
+               <button className="form__button" onClick={finalizeSection}>
+                  Add another section
+               </button>
+            </>
+         )}
+
+         {!activeSection && (
+            <div className="form">
+               <h1 className="title">{sections.length > 0 ? "Add another module" : "Add new module"}</h1>
+               <label className="form__label" htmlFor="title">Name of the module:</label>
+               <input
+                  className="form__input"
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+               />
+               {errors.title && <span className="error">{errors.title}</span>}
+               <button className="form__button" onClick={sendForm}>
+                  Add
+               </button>
+            </div>
+         )}
       </div>
    );
 };

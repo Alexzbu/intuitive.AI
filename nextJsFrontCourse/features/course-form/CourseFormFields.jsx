@@ -1,6 +1,10 @@
 import {
-   Box, Flex, Heading, Input, Textarea, Button, Text, Field, Stack
+   Box, Flex, Heading, Input as ChakraInput, Textarea as ChakraTextarea, Button, Text, Field, Stack
 } from "@chakra-ui/react"
+
+const placeholderStyle = { fontWeight: "normal" }
+const Input = (props) => <ChakraInput _placeholder={placeholderStyle} {...props} />
+const Textarea = (props) => <ChakraTextarea _placeholder={placeholderStyle} {...props} />
 import { Upload, Trash2, Plus } from "lucide-react"
 
 const SectionCard = ({ title, children }) => (

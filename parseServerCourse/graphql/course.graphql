@@ -11,7 +11,7 @@ type Query {
   getQuiz_Question(id: ID!): Quiz_Question @resolve
   getAnswers: [Answer] @resolve
   isEnrolledInCourse(courseId: ID!, userId: ID!): Boolean @resolve
-  getCourseSessionsByCourse(courseId: ID!): [CourseSession] @resolve
+  getCourseSessionsByCourse(courseId: ID!): [CourseSessionPayload] @resolve
 }
 
 type CourseResponse {
@@ -19,7 +19,7 @@ type CourseResponse {
   courses: [Course]
 }
 
-type CourseSession {
+type CourseSessionPayload {
   objectId: ID
   start_date: String
   end_date: String
@@ -73,9 +73,9 @@ type Mutation {
   delCourse(id: ID!): Course @resolve
   enrollInCourse(courseId: ID!, userId: ID!): Object @resolve
 
-  addCourseSession(courseId: ID!, start_date: String, end_date: String, schedule: String, spots_available: Int, max_spots: Int): CourseSession @resolve
-  upCourseSession(id: ID!, start_date: String, end_date: String, schedule: String, spots_available: Int, max_spots: Int, is_active: Boolean): CourseSession @resolve
-  delCourseSession(id: ID!): CourseSession @resolve
+  addCourseSession(courseId: ID!, start_date: String, end_date: String, schedule: String, spots_available: Int, max_spots: Int): CourseSessionPayload @resolve
+  upCourseSession(id: ID!, start_date: String, end_date: String, schedule: String, spots_available: Int, max_spots: Int, is_active: Boolean): CourseSessionPayload @resolve
+  delCourseSession(id: ID!): CourseSessionPayload @resolve
 
   addSection(course_id: ID!, name: String!): Section @resolve
   upSection(id: ID!, name: String!): Section @resolve

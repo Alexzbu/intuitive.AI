@@ -5,7 +5,7 @@ import {
 } from "@chakra-ui/react"
 import {
    MapPin, Clock, Tag, ChevronLeft,
-   CheckCircle, Users, BookOpen, NotebookPen
+   CheckCircle, Users, BookOpen
 } from "lucide-react"
 import { MetaItem } from "./MetaItem"
 import { SessionCard } from "./SessionCard"
@@ -58,18 +58,6 @@ export function CourseDetailsPage({
                >
                   <ChevronLeft size={18} />
                </Button>
-               {canAccess && (
-                  <Button
-                     size="sm"
-                     variant="outline"
-                     colorPalette="blue"
-                     ml="auto"
-                     onClick={() => router.push(`/editor?courseId=${courseId}`)}
-                  >
-                     <NotebookPen size={14} />
-                     Open Notes
-                  </Button>
-               )}
             </Flex>
 
             <Tabs.Root defaultValue="overview" variant="outline">
